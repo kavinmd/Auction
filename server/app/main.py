@@ -5,6 +5,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 
+# ── Import all models so SQLAlchemy metadata is fully populated ───────────────
+# This is required for Alembic autogenerate to detect all tables
+from app.models.user import User  # noqa: F401
+from app.models.auction import Auction  # noqa: F401
+from app.models.bid import Bid  # noqa: F401
+from app.models.payment import Payment  # noqa: F401
+from app.models.watchlist import Watchlist  # noqa: F401
+from app.models.notification import Notification  # noqa: F401
+
 
 # ── Lifespan (startup / shutdown) ─────────────────────────────────────────────
 @asynccontextmanager

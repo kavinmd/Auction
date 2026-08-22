@@ -15,13 +15,12 @@ from app.config import settings
 from app.database import Base
 
 # Import all models here so autogenerate can detect them
-# (will be uncommented as models are added in Day 2)
-# from app.models.user import User
-# from app.models.auction import Auction
-# from app.models.bid import Bid
-# from app.models.payment import Payment
-# from app.models.watchlist import Watchlist
-# from app.models.notification import Notification
+from app.models.user import User  # noqa: F401
+from app.models.auction import Auction  # noqa: F401
+from app.models.bid import Bid  # noqa: F401
+from app.models.payment import Payment  # noqa: F401
+from app.models.watchlist import Watchlist  # noqa: F401
+from app.models.notification import Notification  # noqa: F401
 
 # ── Alembic config ────────────────────────────────────────────────────────────
 config = context.config
