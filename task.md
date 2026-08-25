@@ -56,17 +56,17 @@
 
 ---
 
-## ?? Day 4 � Authentication (Frontend)
+## ?? Day 4  Authentication (Frontend)
 > **Theme:** Login/register UI wired to backend; session persists on refresh
 
-- `[ ]` **4.1** Create `src/api/auth.ts` � Axios functions: `register()`, `login()`, `getMe()`
-- `[ ]` **4.2** Create `src/context/AuthContext.tsx` � stores user + token; loads from localStorage on mount; exposes `login()`, `logout()`, `register()`
-- `[ ]` **4.3** Create `src/components/ProtectedRoute.tsx` � redirects to `/login` if no valid token
-- `[ ]` **4.4** Build `src/pages/Register.tsx` � name, email, password fields; success ? auto-login; error toast on failure
-- `[ ]` **4.5** Build `src/pages/Login.tsx` � email + password; success ? redirect to home; error toast
-- `[ ]` **4.6** Create `src/components/Navbar.tsx` � shows user name + logout when logged in; Login/Register links when not
-- `[ ]` **4.7** Set up `src/App.tsx` with React Router routes: `/`, `/login`, `/register`
-- `[ ]` **4.8** Add global Axios interceptor � attaches JWT header; on 401 ? clear token + redirect to login
+- `[x]` **4.1** Create `src/api/auth.ts`  Axios functions: `register()`, `login()`, `getMe()`
+- `[x]` **4.2** Create `src/context/AuthContext.tsx`  stores user + token; loads from localStorage on mount; exposes `login()`, `logout()`, `register()`
+- `[x]` **4.3** Create `src/components/ProtectedRoute.tsx`  redirects to `/login` if no valid token
+- `[x]` **4.4** Build `src/pages/Register.tsx`  name, email, password fields; success ? auto-login; error toast on failure
+- `[x]` **4.5** Build `src/pages/Login.tsx`  email + password; success ? redirect to home; error toast
+- `[x]` **4.6** Create `src/components/Navbar.tsx`  shows user name + logout when logged in; Login/Register links when not
+- `[x]` **4.7** Set up `src/App.tsx` with React Router routes: `/`, `/login`, `/register`
+- `[x]` **4.8** Add global Axios interceptor  attaches JWT header; on 401 ? clear token + redirect to login
 
 **? Day 4 Goal:** Can register, login, refresh page and stay logged in, logout clears session
 

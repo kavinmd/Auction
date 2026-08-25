@@ -75,3 +75,23 @@ export interface AuthTokens {
   access_token: string;
   token_type: string;
 }
+
+// UserOut — same shape as User, kept as alias for clarity with API naming
+export type UserOut = User;
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  user: UserOut;
+}
+
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
