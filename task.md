@@ -1,4 +1,4 @@
-# AuctionSphere � 15-Day Build Plan
+﻿# AuctionSphere � 15-Day Build Plan
 > **Start Date:** Day 1 | **Deadline:** Day 15
 > **Stack:** FastAPI + PostgreSQL + React 18 + TypeScript + Tailwind CSS
 > **Goal:** Fully functional, deployed, interview-ready auction platform
