@@ -1,4 +1,4 @@
-﻿# AuctionSphere � 15-Day Build Plan
+# AuctionSphere � 15-Day Build Plan
 > **Start Date:** Day 1 | **Deadline:** Day 15
 > **Stack:** FastAPI + PostgreSQL + React 18 + TypeScript + Tailwind CSS
 > **Goal:** Fully functional, deployed, interview-ready auction platform
@@ -75,12 +75,12 @@
 ## ?? Day 5 � Auction CRUD (Backend)
 > **Theme:** Create, list, view, edit, delete auctions with Cloudinary image uploads
 
-- `[ ]` **5.1** Set up Cloudinary SDK � `services/cloudinary_service.py` with `upload_image(file)` function
-- `[ ]` **5.2** Create `schemas/auction.py` � `AuctionCreate`, `AuctionUpdate`, `AuctionOut`, `AuctionListOut`
-- `[ ]` **5.3** Create `services/auction_service.py` � `create_auction()`, `get_auction()`, `list_auctions()` (filter by category, keyword, price range, ending-soon; paginate), `update_auction()`, `delete_auction()` (guard: no bids placed)
-- `[ ]` **5.4** Create `routes/auctions.py` � `POST /api/auctions`, `GET /api/auctions`, `GET /api/auctions/{id}`, `PUT /api/auctions/{id}`, `DELETE /api/auctions/{id}`
-- `[ ]` **5.5** Mount auctions router in `main.py`
-- `[ ]` **5.6** Test: create auction with image ? Cloudinary URL stored in DB; filters return correct results
+- `[x]` **5.1** Set up Cloudinary SDK � `services/cloudinary_service.py` with `upload_image(file)` function
+- `[x]` **5.2** Create `schemas/auction.py` � `AuctionCreate`, `AuctionUpdate`, `AuctionOut`, `AuctionListOut`
+- `[x]` **5.3** Create `services/auction_service.py` � `create_auction()`, `get_auction()`, `list_auctions()` (filter by category, keyword, price range, ending-soon; paginate), `update_auction()`, `delete_auction()` (guard: no bids placed)
+- `[x]` **5.4** Create `routes/auctions.py` � `POST /api/auctions`, `GET /api/auctions`, `GET /api/auctions/{id}`, `PUT /api/auctions/{id}`, `DELETE /api/auctions/{id}`
+- `[x]` **5.5** Mount auctions router in `main.py`
+- `[x]` **5.6** Test: create auction with image ? Cloudinary URL stored in DB; filters return correct results
 
 **? Day 5 Goal:** Full auction CRUD works; images upload to Cloudinary; pagination and filters function correctly
 

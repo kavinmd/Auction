@@ -53,10 +53,11 @@ app.add_middleware(
 
 
 # ─── Routers ──────────────────────────────────────────────────────────────────
-from app.routes import auth  # noqa: E402
+from app.routes import auth       # noqa: E402
+from app.routes import auctions   # noqa: E402
 
-app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
-# app.include_router(auctions.router, prefix="/api/auctions", tags=["Auctions"])
+app.include_router(auth.router,     prefix="/api/auth",     tags=["Auth"])
+app.include_router(auctions.router, prefix="/api/auctions", tags=["Auctions"])
 # app.include_router(bids.router, prefix="/api", tags=["Bids"])
 # app.include_router(watchlist.router, prefix="/api/watchlist", tags=["Watchlist"])
 # app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
