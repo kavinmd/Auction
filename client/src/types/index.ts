@@ -1,5 +1,4 @@
 // TypeScript interfaces for AuctionSphere
-// This file will grow as we add more features
 
 export type AuctionStatus = "open" | "closed" | "paid" | "cancelled";
 export type PaymentStatus = "pending" | "succeeded" | "failed";
@@ -24,6 +23,7 @@ export interface Auction {
   current_price: number;
   end_time: string;
   status: AuctionStatus;
+  is_shipped?: boolean;
   created_at: string;
   bid_count?: number;
 }
@@ -70,13 +70,33 @@ export interface PaginatedResponse<T> {
   has_more: boolean;
 }
 
+// Auction Query Filter Params
+export interface AuctionFilterParams {
+  page?: number;
+  limit?: number;
+  category?: string;
+  keyword?: string;
+  min_price?: number;
+  max_price?: number;
+  ending_soon?: boolean;
+  status?: string;
+  seller_id?: string;
+}
+
+// Auction Update Payload
+export interface AuctionUpdatePayload {
+  title?: string;
+  description?: string;
+  category?: string;
+  end_time?: string;
+}
+
 // Auth
 export interface AuthTokens {
   access_token: string;
   token_type: string;
 }
 
-// UserOut — same shape as User, kept as alias for clarity with API naming
 export type UserOut = User;
 
 export interface TokenResponse {

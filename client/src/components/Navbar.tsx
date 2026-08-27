@@ -30,14 +30,22 @@ export default function Navbar() {
         {/* ── Desktop links ── */}
         <div className="navbar-links">
           <Link
-            to="/"
-            className={`navbar-link ${isActive("/") ? "navbar-link--active" : ""}`}
+            to="/auctions"
+            className={`navbar-link ${
+              isActive("/auctions") || isActive("/") ? "navbar-link--active" : ""
+            }`}
           >
-            Home
+            Live Auctions
           </Link>
 
           {isAuthenticated ? (
             <>
+              <Link
+                to="/auctions/create"
+                className="navbar-btn navbar-btn--primary"
+              >
+                + Create Auction
+              </Link>
               <div className="navbar-divider" />
               <div className="navbar-user">
                 <div className="navbar-avatar">
@@ -88,11 +96,18 @@ export default function Navbar() {
 
       {/* ── Mobile dropdown ── */}
       <div className={`navbar-mobile-menu ${menuOpen ? "navbar-mobile-menu--open" : ""}`}>
-        <Link to="/" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
-          Home
+        <Link to="/auctions" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
+          Live Auctions
         </Link>
         {isAuthenticated ? (
           <>
+            <Link
+              to="/auctions/create"
+              className="navbar-mobile-link navbar-mobile-link--highlight"
+              onClick={() => setMenuOpen(false)}
+            >
+              + Create Auction
+            </Link>
             <div className="navbar-mobile-user">
               <div className="navbar-avatar navbar-avatar--sm">
                 {user?.name?.charAt(0).toUpperCase()}

@@ -86,15 +86,15 @@
 
 ---
 
-## ?? Day 6 � Auction CRUD (Frontend)
+## ?? Day 6  Auction CRUD (Frontend)
 > **Theme:** Browse and create auctions in a polished UI
 
-- `[ ]` **6.1** Create `src/api/auctions.ts` � Axios wrappers for all auction endpoints
-- `[ ]` **6.2** Create `src/types/index.ts` � TypeScript interfaces: `Auction`, `Bid`, `User`, `Notification`, `Payment`
-- `[ ]` **6.3** Build `src/components/AuctionCard.tsx` � reusable card (image, title, current price, time remaining badge, category)
-- `[ ]` **6.4** Build `src/pages/AuctionList.tsx` � responsive grid of `AuctionCard`, filter bar (category, price range, keyword, ending-soon toggle), pagination
-- `[ ]` **6.5** Build `src/pages/AuctionDetail.tsx` � images, title, description, current price (large), live countdown timer (`setInterval`), seller info, bid history table, bid form (visible only when open + not seller)
-- `[ ]` **6.6** Build `src/pages/CreateAuction.tsx` � form with title, description, category, starting price, end datetime, multi-image upload with preview; submit ? redirect to new auction
+- `[x]` **6.1** Create `src/api/auctions.ts` – Axios wrappers for all auction endpoints
+- `[x]` **6.2** Create `src/types/index.ts` – TypeScript interfaces: `Auction`, `Bid`, `User`, `Notification`, `Payment`
+- `[x]` **6.3** Build `src/components/AuctionCard.tsx` – reusable card (image, title, current price, time remaining badge, category)
+- `[x]` **6.4** Build `src/pages/AuctionList.tsx` – responsive grid of `AuctionCard`, filter bar (category, price range, keyword, ending-soon toggle), pagination
+- `[x]` **6.5** Build `src/pages/AuctionDetail.tsx` – images, title, description, current price (large), live countdown timer (`setInterval`), seller info, bid history table, bid form (visible only when open + not seller)
+- `[x]` **6.6** Build `src/pages/CreateAuction.tsx` – form with title, description, category, starting price, end datetime, multi-image upload with preview; submit → redirect to new auction
 
 **? Day 6 Goal:** Can browse with filters, view auction detail with live countdown, create a new listing with images
 
