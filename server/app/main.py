@@ -52,6 +52,13 @@ app.add_middleware(
 )
 
 
+# ─── Static files (Local uploads fallback) ────────────────────────────────────
+import os
+from fastapi.staticfiles import StaticFiles
+os.makedirs("uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+
 # ─── Routers ──────────────────────────────────────────────────────────────────
 from app.routes import auth       # noqa: E402
 from app.routes import auctions   # noqa: E402

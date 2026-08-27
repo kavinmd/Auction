@@ -93,7 +93,7 @@ export default function CreateAuction() {
       errs.description = "Description must be at least 10 characters.";
     }
     if (!startingPrice || Number(startingPrice) <= 0) {
-      errs.startingPrice = "Starting price must be greater than $0.";
+      errs.startingPrice = "Starting price must be greater than ₹0.";
     }
 
     const selectedDate = new Date(endTime);
@@ -202,19 +202,19 @@ export default function CreateAuction() {
 
               <div className="form-group">
                 <label className="form-label" htmlFor="auction-price">
-                  Starting Price ($ USD) *
+                  Starting Price (₹ INR) *
                 </label>
                 <div className="form-input-currency-wrapper">
-                  <span className="currency-symbol">$</span>
+                  <span className="currency-symbol">₹</span>
                   <input
                     id="auction-price"
                     type="number"
-                    step="0.01"
-                    min="0.01"
+                    step="1"
+                    min="1"
                     className={`form-input form-input--currency ${
                       errors.startingPrice ? "form-input--error" : ""
                     }`}
-                    placeholder="100.00"
+                    placeholder="1000"
                     value={startingPrice}
                     onChange={(e) => setStartingPrice(e.target.value)}
                     required

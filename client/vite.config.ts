@@ -22,6 +22,11 @@ export default defineConfig({
         ws: true,
         changeOrigin: true,
       },
+      // Proxy local uploads
+      "/uploads": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
     },
   },
 });

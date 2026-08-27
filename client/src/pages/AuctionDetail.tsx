@@ -6,10 +6,10 @@ import type { Auction } from "../types";
 import { useAuth } from "../context/AuthContext";
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
+    currency: "INR",
+    maximumFractionDigits: 2,
   }).format(amount);
 }
 
@@ -151,7 +151,7 @@ export default function AuctionDetail() {
 
   const images = auction.image_urls && auction.image_urls.length > 0 ? auction.image_urls : [];
   const currentPrice = Number(auction.current_price ?? auction.starting_price);
-  const minNextBid = currentPrice + (currentPrice < 100 ? 5 : 10);
+  const minNextBid = currentPrice + (currentPrice < 1000 ? 50 : 100);
 
   return (
     <div className="auction-detail-page">
@@ -342,7 +342,7 @@ export default function AuctionDetail() {
                       Suggested minimum bid: <strong>{formatCurrency(minNextBid)}</strong>
                     </div>
                     <div className="bid-input-group">
-                      <span className="currency-prefix">$</span>
+                      <span className="currency-prefix">₹</span>
                       <input
                         type="number"
                         defaultValue={minNextBid}

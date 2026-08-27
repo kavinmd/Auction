@@ -214,7 +214,7 @@ export default function AuctionList() {
           {/* Price Range & Quick Clear */}
           <div className="filter-bottom-row">
             <div className="price-inputs-group">
-              <span className="price-label">Price Range ($):</span>
+              <span className="price-label">Price Range (₹):</span>
               <input
                 type="number"
                 placeholder="Min"
