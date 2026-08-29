@@ -137,22 +137,22 @@
 ## ?? Day 9  Scheduler & Notifications (Backend)
 > **Theme:** Auctions auto-close on schedule; users notified of key events
 
-- `[ ]` **9.1** Create `services/notification_service.py` � `create_notification(db, user_id, message)` helper
-- `[ ]` **9.2** Wire outbid notification in `bid_service.place_bid()` � after successful bid, notify previous highest bidder: "You've been outbid on [title]"
-- `[ ]` **9.3** Create `jobs/auction_scheduler.py` � APScheduler async job every 60s:
+- `[x]` **9.1** Create `services/notification_service.py`  `create_notification(db, user_id, message)` helper
+- `[x]` **9.2** Wire outbid notification in `bid_service.place_bid()`  after successful bid, notify previous highest bidder: "You've been outbid on [title]"
+- `[x]` **9.3** Create `jobs/auction_scheduler.py`  APScheduler async job every 60s:
   - Query: `WHERE end_time <= now AND status = 'open'`
   - For each: `status = 'closed'`; find winner (highest bid); notify winner "You won!"; notify seller "Your item sold"; broadcast `auction_closed` WS event
   - Idempotency: skip any auction not in `open` status
-- `[ ]` **9.4** Register scheduler in `main.py` startup/shutdown lifecycle hooks
-- `[ ]` **9.5** Create `schemas/notification.py` � `NotificationOut`
-- `[ ]` **9.6** Create `routes/notifications.py` � `GET /api/users/me/notifications`, `PUT /api/notifications/{id}/read`
-- `[ ]` **9.7** Test: auction with `end_time = now + 65s` ? wait ? verify `status='closed'` and winner notification in DB
+- `[x]` **9.4** Register scheduler in `main.py` startup/shutdown lifecycle hooks
+- `[x]` **9.5** Create `schemas/notification.py`  `NotificationOut`
+- `[x]` **9.6** Create `routes/notifications.py`  `GET /api/users/me/notifications`, `PUT /api/notifications/{id}/read`
+- `[x]` **9.7** Test: auction with `end_time = now + 65s` ? wait ? verify `status='closed'` and winner notification in DB
 
 **? Day 9 Goal:** Auctions auto-close on time; winner/seller notified; notifications stored in DB
 
 ---
 
-## ?? Day 10 � Notifications (Frontend) & Payments (Backend)
+## ?? Day 10  Notifications (Frontend) & Payments (Backend)
 > **Theme:** Notification bell UI + Stripe checkout flow
 
 ### Notifications Frontend

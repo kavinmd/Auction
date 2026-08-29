@@ -15,20 +15,24 @@ from app.models.watchlist import Watchlist  # noqa: F401
 from app.models.notification import Notification  # noqa: F401
 
 
+from app.jobs.auction_scheduler import start_scheduler, stop_scheduler
+
 # ── Lifespan (startup / shutdown) ─────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     Application startup and shutdown lifecycle.
-    Scheduler and other background services will be registered here (Day 9).
+    Scheduler and other background services registered here.
     """
     # ── Startup ──────────────────────────────────────────────────────────────
     print("[AuctionSphere] API starting up...", flush=True)
+    start_scheduler()
 
     yield  # ← application runs here
 
     # ── Shutdown ─────────────────────────────────────────────────────────────
     print("[AuctionSphere] API shutting down...", flush=True)
+    stop_scheduler()
 
 
 # ── FastAPI app ───────────────────────────────────────────────────────────────
@@ -73,15 +77,16 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 from app.routes import auth       # noqa: E402
 from app.routes import auctions   # noqa: E402
 from app.routes import bids       # noqa: E402
+from app.routes import notifications  # noqa: E402
 from app.websocket import auction_socket  # noqa: E402
 
 app.include_router(auth.router,           prefix="/api/auth",     tags=["Auth"])
 app.include_router(auctions.router,       prefix="/api/auctions", tags=["Auctions"])
 app.include_router(bids.router,           prefix="/api",          tags=["Bids"])
+app.include_router(notifications.router,  prefix="/api",          tags=["Notifications"])
 app.include_router(auction_socket.router, tags=["WebSocket"])
 # app.include_router(watchlist.router, prefix="/api/watchlist", tags=["Watchlist"])
 # app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
-# app.include_router(notifications.router, prefix="/api", tags=["Notifications"])
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

@@ -20,6 +20,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.auction import Auction, AuctionStatus
 from app.models.bid import Bid
+from app.models.notification import Notification
 from app.models.user import User
 from app.schemas.bid import BidderInfo, BidOut, UserBidOut
 
@@ -89,7 +90,18 @@ async def place_bid(
     if 0 < time_remaining_seconds < 60:
         auction.end_time = auction_end + timedelta(minutes=2)
 
-    # ── 4. Insert new bid & update auction current_price ──────────────────────
+    # ── 4. Find previous highest bidder for outbid notification ────────────────
+    prev_bid_stmt = (
+        select(Bid)
+        .where(Bid.auction_id == auction_id)
+        .order_by(desc(Bid.amount))
+        .limit(1)
+    )
+    prev_bid_res = await db.execute(prev_bid_stmt)
+    prev_bid = prev_bid_res.scalar_one_or_none()
+    previous_bidder_id = prev_bid.bidder_id if prev_bid else None
+
+    # ── 5. Insert new bid & update auction current_price ──────────────────────
     bid = Bid(
         auction_id=auction_id,
         bidder_id=bidder_id,
@@ -98,6 +110,14 @@ async def place_bid(
     )
     db.add(bid)
     auction.current_price = amount
+
+    # Create notification for outbid user if distinct from current bidder
+    if previous_bidder_id and previous_bidder_id != bidder_id:
+        outbid_notification = Notification(
+            user_id=previous_bidder_id,
+            message=f"You've been outbid on '{auction.title}'. The new highest bid is ${amount:,.2f}.",
+        )
+        db.add(outbid_notification)
 
     await db.commit()
     await db.refresh(bid)
