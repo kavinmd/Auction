@@ -52,6 +52,16 @@ app.add_middleware(
 )
 
 
+# ─── Rate Limiter (SlowAPI) ───────────────────────────────────────────────────
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
 # ─── Static files (Local uploads fallback) ────────────────────────────────────
 import os
 from fastapi.staticfiles import StaticFiles
@@ -62,10 +72,13 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 # ─── Routers ──────────────────────────────────────────────────────────────────
 from app.routes import auth       # noqa: E402
 from app.routes import auctions   # noqa: E402
+from app.routes import bids       # noqa: E402
+from app.websocket import auction_socket  # noqa: E402
 
-app.include_router(auth.router,     prefix="/api/auth",     tags=["Auth"])
-app.include_router(auctions.router, prefix="/api/auctions", tags=["Auctions"])
-# app.include_router(bids.router, prefix="/api", tags=["Bids"])
+app.include_router(auth.router,           prefix="/api/auth",     tags=["Auth"])
+app.include_router(auctions.router,       prefix="/api/auctions", tags=["Auctions"])
+app.include_router(bids.router,           prefix="/api",          tags=["Bids"])
+app.include_router(auction_socket.router, tags=["WebSocket"])
 # app.include_router(watchlist.router, prefix="/api/watchlist", tags=["Watchlist"])
 # app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 # app.include_router(notifications.router, prefix="/api", tags=["Notifications"])

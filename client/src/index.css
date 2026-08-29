@@ -1850,10 +1850,21 @@ body {
   border-color: rgba(99, 102, 241, 0.4);
 }
 
+.bid-history-bidder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .bidder-badge {
   font-size: 0.85rem;
   font-weight: 700;
   color: #a78bfa;
+}
+
+.bid-history-time {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
 }
 
 .bid-history-amount {

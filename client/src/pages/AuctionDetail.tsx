@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getAuction, deleteAuction } from "../api/auctions";
-import type { Auction } from "../types";
+import { placeBid, getAuctionBids } from "../api/bids";
+import type { Auction, Bid } from "../types";
 import { useAuth } from "../context/AuthContext";
+
+import { useAuctionSocket } from "../hooks/useAuctionSocket";
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-IN", {
@@ -20,6 +23,14 @@ function formatDate(dateStr: string): string {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+  });
+}
+
+function formatTimeOnly(dateStr: string): string {
+  return new Date(dateStr).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
   });
 }
 
@@ -56,10 +67,13 @@ export default function AuctionDetail() {
   const { user, isAuthenticated } = useAuth();
 
   const [auction, setAuction] = useState<Auction | null>(null);
+  const [bids, setBids] = useState<Bid[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
+  const [bidAmount, setBidAmount] = useState<string>("");
+  const [placingBid, setPlacingBid] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
     days: 0,
     hours: 0,
@@ -69,19 +83,81 @@ export default function AuctionDetail() {
     totalSeconds: 0,
   });
 
-  // Fetch auction data
+  // ── Real-time WebSocket hook ─────────────────────────────────────────────
+  useAuctionSocket(id, {
+    onNewBid: (data) => {
+      setAuction((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          current_price: data.current_price,
+          end_time: data.end_time,
+          bid_count: (prev.bid_count ?? 0) + 1,
+        };
+      });
+
+      const newBidItem: Bid = {
+        id: data.id,
+        auction_id: data.auction_id,
+        bidder_id: data.bidder_id,
+        amount: data.amount,
+        created_at: data.created_at,
+        bidder: {
+          id: data.bidder_id,
+          name: data.bidder_name,
+          email: "",
+        },
+      };
+
+      setBids((prev) => {
+        if (prev.some((b) => b.id === data.id)) return prev;
+        return [newBidItem, ...prev];
+      });
+
+      // Update suggested next minimum bid
+      const nextMin = data.current_price + (data.current_price < 1000 ? 50 : 100);
+      setBidAmount(String(nextMin));
+
+      // Toast alert if bid came from another client
+      if (data.bidder_id !== user?.id) {
+        toast.success(`⚡ New live bid: ${formatCurrency(data.amount)} by ${data.bidder_name}!`);
+      }
+    },
+
+    onTimeExtended: (data) => {
+      setAuction((prev) => (prev ? { ...prev, end_time: data.new_end_time } : prev));
+      setTimeRemaining(calculateTimeRemaining(data.new_end_time));
+      toast("⏳ Anti-sniping: Auction extended by 2 minutes!", {
+        icon: "⏳",
+        style: { background: "#1e1b4b", color: "#c7d2fe", border: "1px solid #6366f1" },
+      });
+    },
+
+    onAuctionClosed: () => {
+      setAuction((prev) => (prev ? { ...prev, status: "closed" } : prev));
+      toast("🏷️ This auction has now closed.", { icon: "🏷️" });
+    },
+
+    enabled: Boolean(auction && auction.status === "open"),
+  });
+
+  // Fetch auction data & bid history
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     setError(null);
 
-    getAuction(id)
-      .then((data) => {
-        setAuction(data);
-        setTimeRemaining(calculateTimeRemaining(data.end_time));
+    Promise.all([getAuction(id), getAuctionBids(id)])
+      .then(([auctionData, bidsData]) => {
+        setAuction(auctionData);
+        setBids(bidsData);
+        setTimeRemaining(calculateTimeRemaining(auctionData.end_time));
+        const curr = Number(auctionData.current_price ?? auctionData.starting_price);
+        const nextMin = curr + (curr < 1000 ? 50 : 100);
+        setBidAmount(String(nextMin));
       })
       .catch((err) => {
-        console.error("Error fetching auction:", err);
+        console.error("Error fetching auction details:", err);
         setError(
           err?.response?.data?.detail || "Auction not found or failed to load."
         );
@@ -103,6 +179,44 @@ export default function AuctionDetail() {
 
   const isSeller = Boolean(user && auction && user.id === auction.seller_id);
   const isOpen = auction?.status === "open" && !timeRemaining.isExpired;
+
+  const currentPrice = Number(auction?.current_price ?? auction?.starting_price ?? 0);
+  const minNextBid = currentPrice + (currentPrice < 1000 ? 50 : 100);
+
+  const handlePlaceBid = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auction) return;
+
+    const numAmount = parseFloat(bidAmount);
+    if (isNaN(numAmount) || numAmount <= currentPrice) {
+      toast.error(`Bid amount must be strictly greater than ${formatCurrency(currentPrice)}`);
+      return;
+    }
+
+    setPlacingBid(true);
+    try {
+      const newBid = await placeBid(auction.id, numAmount);
+      toast.success(`🎉 Bid of ${formatCurrency(numAmount)} placed successfully!`);
+
+      // Update local state
+      setAuction((prev) =>
+        prev
+          ? {
+              ...prev,
+              current_price: numAmount,
+              bid_count: (prev.bid_count ?? 0) + 1,
+            }
+          : prev
+      );
+      setBids((prev) => [newBid, ...prev]);
+      setBidAmount(String(numAmount + (numAmount < 1000 ? 50 : 100)));
+    } catch (err: any) {
+      console.error("Failed to place bid:", err);
+      toast.error(err?.response?.data?.detail || "Failed to place bid.");
+    } finally {
+      setPlacingBid(false);
+    }
+  };
 
   const handleDelete = async () => {
     if (!auction) return;
@@ -150,8 +264,6 @@ export default function AuctionDetail() {
   }
 
   const images = auction.image_urls && auction.image_urls.length > 0 ? auction.image_urls : [];
-  const currentPrice = Number(auction.current_price ?? auction.starting_price);
-  const minNextBid = currentPrice + (currentPrice < 1000 ? 50 : 100);
 
   return (
     <div className="auction-detail-page">
@@ -337,7 +449,7 @@ export default function AuctionDetail() {
             ) : isOpen ? (
               <div className="bid-placement-container">
                 {isAuthenticated ? (
-                  <div className="bid-preview-form">
+                  <form onSubmit={handlePlaceBid} className="bid-preview-form">
                     <div className="bid-helper-text">
                       Suggested minimum bid: <strong>{formatCurrency(minNextBid)}</strong>
                     </div>
@@ -345,28 +457,34 @@ export default function AuctionDetail() {
                       <span className="currency-prefix">₹</span>
                       <input
                         type="number"
-                        defaultValue={minNextBid}
+                        value={bidAmount}
+                        onChange={(e) => setBidAmount(e.target.value)}
                         min={minNextBid}
                         step="1"
                         className="bid-input"
                         placeholder="Enter your bid"
+                        required
+                        disabled={placingBid}
                       />
                       <button
-                        type="button"
+                        type="submit"
                         className="btn btn--primary bid-submit-btn"
-                        onClick={() =>
-                          toast.success(
-                            "Bid system ready! Concurrency-safe bidding activates in Day 7."
-                          )
-                        }
+                        disabled={placingBid}
                       >
-                        ⚡ Place Bid
+                        {placingBid ? (
+                          <>
+                            <span className="btn-spinner" />
+                            <span>Placing...</span>
+                          </>
+                        ) : (
+                          <>⚡ Place Bid</>
+                        )}
                       </button>
                     </div>
                     <p className="bid-notice">
                       🔒 All bids are binding. Anti-sniping protection extends the timer by 2 mins if placed within the last 60s.
                     </p>
-                  </div>
+                  </form>
                 ) : (
                   <div className="auth-required-box">
                     <p>You must be logged in to participate in bidding.</p>
@@ -409,13 +527,35 @@ export default function AuctionDetail() {
         </div>
 
         <div className="detail-bids-card">
-          <h2 className="section-heading">Bid History ({auction.bid_count ?? 0})</h2>
-          {(auction.bid_count ?? 0) > 0 ? (
+          <h2 className="section-heading">Bid History ({bids.length})</h2>
+          {bids.length > 0 ? (
             <div className="bid-history-list">
-              <div className="bid-history-item bid-history-item--leading">
-                <span className="bidder-badge">⚡ Leading Bid</span>
-                <span className="bid-history-amount">{formatCurrency(currentPrice)}</span>
-              </div>
+              {bids.map((b, idx) => {
+                const bidderName = b.bidder?.name
+                  ? isSeller || b.bidder_id === user?.id
+                    ? b.bidder.name
+                    : `${b.bidder.name.slice(0, 1)}***${b.bidder.name.slice(-1)}`
+                  : `Bidder #${bids.length - idx}`;
+
+                return (
+                  <div
+                    key={b.id || idx}
+                    className={`bid-history-item ${idx === 0 ? "bid-history-item--leading" : ""}`}
+                  >
+                    <div className="bid-history-bidder">
+                      <span className="bidder-badge">
+                        {idx === 0 ? "⚡ Leading Bid" : `🏷️ ${bidderName}`}
+                      </span>
+                      <span className="bid-history-time">
+                        {formatTimeOnly(b.created_at)}
+                      </span>
+                    </div>
+                    <span className="bid-history-amount">
+                      {formatCurrency(Number(b.amount))}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <div className="no-bids-state">

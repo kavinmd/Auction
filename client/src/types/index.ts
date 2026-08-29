@@ -32,7 +32,7 @@ export interface Bid {
   id: string;
   auction_id: string;
   bidder_id: string;
-  bidder?: User;
+  bidder?: Partial<User>;
   amount: number;
   created_at: string;
 }

@@ -100,42 +100,41 @@
 
 ---
 
-## ?? Day 7 � Bidding Logic (Backend) ? CRITICAL
+## ?? Day 7  Bidding Logic (Backend) ? CRITICAL
 > **Theme:** Concurrency-safe bid placement with PostgreSQL row-level locking
 
-- `[ ]` **7.1** Create `schemas/bid.py` � `BidCreate` (amount: Decimal), `BidOut`
-- `[ ]` **7.2** Create `services/bid_service.py` � `place_bid(db, auction_id, bidder_id, amount)`:
-  - Open `async with db.begin()` transaction
-  - `SELECT * FROM auctions WHERE id=? FOR UPDATE` (row-level lock)
+- `[x]` **7.1** Create `schemas/bid.py` – `BidCreate` (amount: Decimal), `BidOut`
+- `[x]` **7.2** Create `services/bid_service.py` – `place_bid(db, auction_id, bidder_id, amount)`:
+  - Open transaction with row-level lock: `SELECT * FROM auctions WHERE id=? FOR UPDATE`
   - Validate inside lock: status == 'open', now < end_time, bidder != seller, amount > current_price
   - Insert new bid row; update `auction.current_price = amount`
-  - Anti-sniping: if `end_time - now < 60s` ? `end_time += 2 minutes`
+  - Anti-sniping: if `end_time - now < 60s` → `end_time += 2 minutes`
   - Commit and return result
-- `[ ]` **7.3** Create `routes/bids.py` � `POST /api/auctions/{id}/bids` (auth), `GET /api/auctions/{id}/bids` (public), `GET /api/users/me/bids` (auth)
-- `[ ]` **7.4** Add rate limiting to bid endpoint using `slowapi` (max 5 bids/min per user)
-- `[ ]` **7.5** Write `tests/test_bids.py` concurrency test � `asyncio.gather()` fires 2 simultaneous bids; assert exactly 1 succeeds + 1 fails + DB has 1 bid row
-- `[ ]` **7.6** Run test � confirm it passes ?
+- `[x]` **7.3** Create `routes/bids.py` – `POST /api/auctions/{id}/bids` (auth), `GET /api/auctions/{id}/bids` (public), `GET /api/users/me/bids` (auth)
+- `[x]` **7.4** Add rate limiting to bid endpoint using `slowapi` (max 10 bids/min per user)
+- `[x]` **7.5** Write `tests/test_bids.py` concurrency test – `asyncio.gather()` fires 2 simultaneous bids; assert exactly 1 succeeds + 1 fails + DB has 1 bid row
+- `[x]` **7.6** Run test – confirm it passes ✅
 
 **? Day 7 Goal:** Bidding is concurrency-safe. Two simultaneous bids ? exactly one wins. Anti-sniping works.
 
 ---
 
-## ?? Day 8 � WebSocket Real-time Updates
-> **Theme:** Instant live updates � no polling, no refresh needed
+## ?? Day 8  WebSocket Real-time Updates
+> **Theme:** Instant live updates  no polling, no refresh needed
 
-- `[ ]` **8.1** Create `websocket/connection_manager.py` � `dict[auction_id ? list[WebSocket]]`; `connect()`, `disconnect()`, `broadcast(auction_id, message)` methods
-- `[ ]` **8.2** Create `websocket/auction_socket.py` � endpoint `/ws/auctions/{id}`; accept, register, keep alive loop, deregister on disconnect
-- `[ ]` **8.3** Wire `bid_service.place_bid()` ? after commit: `manager.broadcast(auction_id, { type: "new_bid", bidder, amount, current_price, end_time })`
-- `[ ]` **8.4** Wire scheduler ? on auction close: `manager.broadcast(auction_id, { type: "auction_closed", winner_id, final_price })`
-- `[ ]` **8.5** Create `src/hooks/useAuctionSocket.ts` � opens WS on mount, parses JSON messages, calls `onNewBid` / `onAuctionClosed` / `onTimeExtended` callbacks, auto-reconnects with backoff
-- `[ ]` **8.6** Wire `AuctionDetail.tsx` to `useAuctionSocket` � `onNewBid` updates price + bid list; `onTimeExtended` updates countdown; `onAuctionClosed` shows banner + disables bid form
-- `[ ]` **8.7** Test: two browser tabs on same auction � bid in tab 1 ? tab 2 updates instantly
+- `[x]` **8.1** Create `websocket/connection_manager.py` – `dict[auction_id → list[WebSocket]]`; `connect()`, `disconnect()`, `broadcast(auction_id, message)` methods
+- `[x]` **8.2** Create `websocket/auction_socket.py` – endpoint `/ws/auctions/{id}`; accept, register, keep alive loop, deregister on disconnect
+- `[x]` **8.3** Wire `bid_service.place_bid()` → after commit: `manager.broadcast(auction_id, { type: "new_bid", bidder_name, amount, current_price, end_time })`
+- `[x]` **8.4** Wire scheduler → on auction close: `manager.broadcast(auction_id, { type: "auction_closed", winner_id, final_price })`
+- `[x]` **8.5** Create `src/hooks/useAuctionSocket.ts` – opens WS on mount, parses JSON messages, calls `onNewBid` / `onAuctionClosed` / `onTimeExtended` callbacks, auto-reconnects with backoff
+- `[x]` **8.6** Wire `AuctionDetail.tsx` to `useAuctionSocket` – `onNewBid` updates price + bid list; `onTimeExtended` updates countdown; `onAuctionClosed` shows banner + disables bid form
+- `[x]` **8.7** Test: two browser tabs on same auction – bid in tab 1 → tab 2 updates instantly
 
 **? Day 8 Goal:** Real-time updates work across multiple users with no page refresh
 
 ---
 
-## ?? Day 9 � Scheduler & Notifications (Backend)
+## ?? Day 9  Scheduler & Notifications (Backend)
 > **Theme:** Auctions auto-close on schedule; users notified of key events
 
 - `[ ]` **9.1** Create `services/notification_service.py` � `create_notification(db, user_id, message)` helper
