@@ -242,6 +242,191 @@ body {
   .navbar-mobile-menu { display: flex; }
 }
 
+/* ── Notification Bell ────────────────────────────────────────────────────── */
+.navbar-bell-wrap {
+  position: relative;
+}
+
+.navbar-bell-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.navbar-bell-btn:hover,
+.navbar-bell-btn--active {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.navbar-bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 99px;
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-bg);
+  line-height: 1;
+  animation: bell-pop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes bell-pop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ── Notification Dropdown ─────────────────────────────────────────────────── */
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 360px;
+  max-height: 480px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: dropdown-in 0.18s ease;
+  z-index: 200;
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+.notif-dropdown__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.notif-dropdown__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.notif-dropdown__mark-all {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background var(--transition);
+}
+.notif-dropdown__mark-all:hover { background: rgba(99,102,241,0.1); }
+.notif-dropdown__mark-all:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.notif-dropdown__list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.notif-dropdown__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 20px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+.notif-dropdown__empty span { font-size: 2rem; }
+
+/* ── Notification Item ─────────────────────────────────────────────────────── */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition);
+  position: relative;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: rgba(255,255,255,0.04); }
+.notif-item--unread { background: rgba(99, 102, 241, 0.06); }
+.notif-item--unread:hover { background: rgba(99, 102, 241, 0.1); }
+
+.notif-item__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  margin-top: 6px;
+  box-shadow: 0 0 6px var(--color-primary-glow);
+}
+
+.notif-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-item__msg {
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.notif-item__time {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Mobile notif summary row */
+.navbar-mobile-notif {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Responsive bell dropdown */
+@media (max-width: 480px) {
+  .notif-dropdown {
+    width: calc(100vw - 32px);
+    right: -8px;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    MAIN CONTENT
 ═══════════════════════════════════════════════════════════════════════════ */
@@ -2155,3 +2340,213 @@ body {
   min-width: 220px;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAYMENT PAGES (Success & Cancel)
+═══════════════════════════════════════════════════════════════════════════ */
+.payment-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 40px 16px;
+}
+
+.payment-card {
+  background: var(--color-surface);
+  border-radius: 20px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+}
+
+.payment-card--success {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 40px rgba(16, 185, 129, 0.08);
+}
+
+.payment-card--cancel {
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 40px rgba(239, 68, 68, 0.08);
+}
+
+/* Animated checkmark icon */
+.payment-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.payment-icon--success {
+  background: rgba(16, 185, 129, 0.12);
+  border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.payment-icon--cancel {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.payment-checkmark {
+  width: 52px;
+  height: 52px;
+}
+
+.payment-checkmark__circle {
+  stroke: var(--color-success);
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.payment-checkmark__check {
+  stroke: var(--color-success);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes stroke {
+  to { stroke-dashoffset: 0; }
+}
+
+.payment-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.payment-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* Detail box (shows amount, status etc) */
+.payment-detail-box {
+  width: 100%;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.payment-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.payment-detail-row:last-child { border-bottom: none; }
+
+.payment-detail-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.payment-detail-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.payment-detail-value--accent {
+  color: var(--color-success);
+  font-size: 1.1rem;
+}
+
+.payment-detail-value--mono {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Info box (cancel page) */
+.payment-info-box {
+  width: 100%;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.payment-info-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* Status badges */
+.payment-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.payment-status-badge--succeeded {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.payment-status-badge--pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-accent);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.payment-status-badge--failed {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.payment-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.payment-skeleton {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(90deg, var(--color-surface-2) 25%, rgba(55,65,81,0.5) 50%, var(--color-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+.payment-footnote {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}

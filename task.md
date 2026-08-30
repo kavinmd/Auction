@@ -156,23 +156,23 @@
 > **Theme:** Notification bell UI + Stripe checkout flow
 
 ### Notifications Frontend
-- `[ ]` **10.1** Create `src/api/notifications.ts` � fetch + mark-as-read functions
-- `[ ]` **10.2** Add notification bell to `Navbar.tsx` � unread count badge, dropdown list on click, mark as read on click, poll every 30s
+- `[x]` **10.1** Create `src/api/notifications.ts` – fetch + mark-as-read functions
+- `[x]` **10.2** Add notification bell to `Navbar.tsx` – unread count badge, dropdown list on click, mark as read on click, poll every 30s
 
 ### Payments Backend
-- `[ ]` **10.3** Set up Stripe test keys in `.env` (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`)
-- `[ ]` **10.4** Create `services/payment_service.py` � `create_checkout_session()`: verify user is winner + auction is closed + not paid ? create Stripe Checkout ? insert `payments` row with `status=pending`
-- `[ ]` **10.5** Create `routes/payments.py`:
-  - `POST /api/payments/checkout/{auction_id}` (auth, winner only) ? returns `{ checkout_url }`
-  - `POST /api/payments/webhook` � verify Stripe signature; `checkout.session.completed` ? `status=succeeded`, `auction.status=paid`; `payment_intent.payment_failed` ? `status=failed`
-- `[ ]` **10.6** Add failed-payment rule to `docs/design-decisions.md` � "No auto-reopen. Winner has 48h to retry. After that, seller must relist."
-- `[ ]` **10.7** Test webhook locally via Stripe CLI: `stripe listen --forward-to localhost:8000/api/payments/webhook`
+- `[x]` **10.3** Set up Stripe test keys in `.env` (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`)
+- `[x]` **10.4** Create `services/payment_service.py` – `create_checkout_session()`: verify user is winner + auction is closed + not paid → create Stripe Checkout → insert `payments` row with `status=pending`
+- `[x]` **10.5** Create `routes/payments.py`:
+  - `POST /api/payments/checkout/{auction_id}` (auth, winner only) → returns `{ checkout_url }`
+  - `POST /api/payments/webhook` – verify Stripe signature; `checkout.session.completed` → `status=succeeded`, `auction.status=paid`; `payment_intent.payment_failed` → `status=failed`
+- `[x]` **10.6** Add failed-payment rule to `docs/design-decisions.md` – "No auto-reopen. Winner has 48h to retry. After that, seller must relist."
+- `[x]` **10.7** Test webhook locally via Stripe CLI: `stripe listen --forward-to localhost:8000/api/payments/webhook`
 
 **? Day 10 Goal:** Notification bell shows live notifications; Stripe checkout created; webhook updates DB correctly
 
 ---
 
-## ?? Day 11 � Payments (Frontend) & Dashboards
+## ?? Day 11  Payments (Frontend) & Dashboards
 > **Theme:** Complete payment flow + buyer and seller dashboards
 
 ### Payments Frontend

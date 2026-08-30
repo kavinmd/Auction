@@ -14,6 +14,8 @@ import Register from "./pages/Register";
 import AuctionList from "./pages/AuctionList";
 import AuctionDetail from "./pages/AuctionDetail";
 import CreateAuction from "./pages/CreateAuction";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 
 function App() {
   return (
@@ -58,6 +60,24 @@ function App() {
               }
             />
 
+            {/* Payment result routes */}
+            <Route
+              path="/payment/success"
+              element={
+                <ProtectedRoute>
+                  <PaymentSuccess />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment/cancel"
+              element={
+                <ProtectedRoute>
+                  <PaymentCancel />
+                </ProtectedRoute>
+              }
+            />
+
             {/* 404 fallback */}
             <Route
               path="*"
@@ -78,3 +98,5 @@ function App() {
 }
 
 export default App;
+
+
