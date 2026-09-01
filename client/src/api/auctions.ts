@@ -55,3 +55,11 @@ export async function updateAuction(
 export async function deleteAuction(id: string): Promise<void> {
   await axiosInstance.delete(`/api/auctions/${id}`);
 }
+
+/**
+ * Mark a paid auction as shipped (seller only).
+ */
+export async function markShipped(id: string): Promise<import("../types").Auction> {
+  const response = await axiosInstance.put<import("../types").Auction>(`/api/auctions/${id}/shipped`);
+  return response.data;
+}

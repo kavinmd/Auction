@@ -4,6 +4,7 @@ import type { Auction } from "../types";
 
 interface AuctionCardProps {
   auction: Auction;
+  onRemove?: () => void;
 }
 
 function formatCurrency(amount: number): string {
@@ -62,7 +63,7 @@ function getTimeRemaining(endTimeStr: string, status: string) {
   };
 }
 
-export default function AuctionCard({ auction }: AuctionCardProps) {
+export default function AuctionCard({ auction, onRemove }: AuctionCardProps) {
   const [timeInfo, setTimeInfo] = useState(() =>
     getTimeRemaining(auction.end_time, auction.status)
   );
@@ -141,6 +142,19 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
           <span className="auction-card-cta">
             View Listing <span>&rarr;</span>
           </span>
+          {onRemove && (
+            <button
+              className="auction-card-remove-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onRemove();
+              }}
+              title="Remove from watchlist"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
     </Link>

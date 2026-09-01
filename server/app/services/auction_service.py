@@ -329,3 +329,51 @@ async def delete_auction(
 
     await db.delete(auction)
     await db.commit()
+
+
+async def mark_shipped(
+    auction_id: str,
+    seller_id: str,
+    db: AsyncSession,
+) -> AuctionOut:
+    """
+    Mark a paid auction as shipped by the seller.
+
+    Raises:
+        HTTPException 404: Auction not found.
+        HTTPException 403: Caller is not the seller.
+        HTTPException 400: Auction is not in 'paid' status.
+    """
+    result = await db.execute(select(Auction).where(Auction.id == auction_id))
+    auction = result.scalar_one_or_none()
+
+    if auction is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Auction not found.")
+
+    if auction.seller_id != seller_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the seller can mark an item as shipped.")
+
+    if auction.status != AuctionStatus.paid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only paid auctions can be marked as shipped.",
+        )
+
+    if auction.is_shipped:
+        # Already shipped — idempotent, just return current state
+        count_result = await db.execute(select(func.count()).where(Bid.auction_id == auction_id))
+        bid_count = count_result.scalar() or 0
+        seller_result = await db.execute(select(User).where(User.id == auction.seller_id))
+        seller = seller_result.scalar_one_or_none()
+        return _build_auction_out(auction, bid_count=bid_count, seller=seller)
+
+    auction.is_shipped = True
+    await db.commit()
+    await db.refresh(auction)
+
+    count_result = await db.execute(select(func.count()).where(Bid.auction_id == auction_id))
+    bid_count = count_result.scalar() or 0
+    seller_result = await db.execute(select(User).where(User.id == auction.seller_id))
+    seller = seller_result.scalar_one_or_none()
+
+    return _build_auction_out(auction, bid_count=bid_count, seller=seller)

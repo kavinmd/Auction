@@ -79,6 +79,7 @@ from app.routes import auctions   # noqa: E402
 from app.routes import bids       # noqa: E402
 from app.routes import notifications  # noqa: E402
 from app.routes import payments   # noqa: E402
+from app.routes import watchlist  # noqa: E402
 from app.websocket import auction_socket  # noqa: E402
 
 app.include_router(auth.router,           prefix="/api/auth",     tags=["Auth"])
@@ -86,8 +87,8 @@ app.include_router(auctions.router,       prefix="/api/auctions", tags=["Auction
 app.include_router(bids.router,           prefix="/api",          tags=["Bids"])
 app.include_router(notifications.router,  prefix="/api",          tags=["Notifications"])
 app.include_router(payments.router,       prefix="/api",          tags=["Payments"])
+app.include_router(watchlist.router,      prefix="/api",          tags=["Watchlist"])
 app.include_router(auction_socket.router, tags=["WebSocket"])
-# app.include_router(watchlist.router, prefix="/api/watchlist", tags=["Watchlist"])
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

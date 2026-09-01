@@ -154,6 +154,26 @@ export default function Navbar() {
                 + Create Auction
               </Link>
 
+              {/* ── Dashboard links ── */}
+              <Link
+                to="/dashboard/buyer"
+                id="navbar-buyer-dashboard-link"
+                className={`navbar-link ${
+                  location.pathname.startsWith("/dashboard/buyer") ? "navbar-link--active" : ""
+                }`}
+              >
+                My Dashboard
+              </Link>
+              <Link
+                to="/dashboard/seller"
+                id="navbar-seller-dashboard-link"
+                className={`navbar-link ${
+                  location.pathname.startsWith("/dashboard/seller") ? "navbar-link--active" : ""
+                }`}
+              >
+                Selling
+              </Link>
+
               {/* ── Notification Bell ── */}
               <div className="navbar-bell-wrap" ref={bellRef}>
                 <button
@@ -280,6 +300,20 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
             >
               + Create Auction
+            </Link>
+            <Link
+              to="/dashboard/buyer"
+              className="navbar-mobile-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              My Dashboard
+            </Link>
+            <Link
+              to="/dashboard/seller"
+              className="navbar-mobile-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              Selling
             </Link>
             {/* Mobile notification summary */}
             {unreadCount > 0 && (

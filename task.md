@@ -176,25 +176,25 @@
 > **Theme:** Complete payment flow + buyer and seller dashboards
 
 ### Payments Frontend
-- `[ ]` **11.1** Add "Pay Now" button in `BuyerDashboard` ? calls checkout API ? redirects to Stripe page
-- `[ ]` **11.2** Create `src/pages/PaymentSuccess.tsx` � success page with order summary
-- `[ ]` **11.3** Create `src/pages/PaymentCancel.tsx` � failed/cancelled page with retry link
+- `[x]` **11.1** Add "Pay Now" button in `BuyerDashboard` — calls checkout API — redirects to Stripe page
+- `[x]` **11.2** Create `src/pages/PaymentSuccess.tsx` — success page with order summary
+- `[x]` **11.3** Create `src/pages/PaymentCancel.tsx` — failed/cancelled page with retry link
 
 ### Buyer Dashboard
-- `[ ]` **11.4** Build `src/pages/BuyerDashboard.tsx` with 3 tabs:
-  - **My Bids** � all bids with auction title, amount, status, "winning" badge
-  - **My Watchlist** � saved auctions with current price + time remaining
-  - **Won Auctions** � won auctions with payment status (Pending/Paid) + Pay Now button
+- `[x]` **11.4** Build `src/pages/BuyerDashboard.tsx` with 3 tabs:
+  - **My Bids** — all bids with auction title, amount, status, "winning" badge
+  - **My Watchlist** — saved auctions with current price + time remaining
+  - **Won Auctions** — won auctions with payment status (Pending/Paid) + Pay Now button
 
 ### Seller Dashboard
-- `[ ]` **11.5** Build `src/pages/SellerDashboard.tsx` with 2 tabs:
-  - **My Listings** � live bid count + current price; Edit/Delete if no bids; status badge
-  - **Sold Items** � closed/paid auctions; "Mark as Shipped" button
-- `[ ]` **11.6** Backend: `PUT /api/auctions/{id}/shipped` � seller marks item as shipped
+- `[x]` **11.5** Build `src/pages/SellerDashboard.tsx` with 2 tabs:
+  - **My Listings** — live bid count + current price; Edit/Delete if no bids; status badge
+  - **Sold Items** — closed/paid auctions; "Mark as Shipped" button
+- `[x]` **11.6** Backend: `PUT /api/auctions/{id}/shipped` — seller marks item as shipped
 
 ### Watchlist
-- `[ ]` **11.7** Create `src/api/watchlist.ts` � add/remove/fetch watchlist
-- `[ ]` **11.8** Add heart toggle ?? to `AuctionCard.tsx` and `AuctionDetail.tsx`
+- `[x]` **11.7** Create `src/api/watchlist.ts` — add/remove/fetch watchlist
+- `[x]` **11.8** Add watchlist remove button to `AuctionCard.tsx`; full watchlist tab in BuyerDashboard
 
 **? Day 11 Goal:** Stripe payment completes and updates `auction.status=paid`; both dashboards are fully functional
 
@@ -204,8 +204,8 @@
 > **Theme:** Admin oversight tools + complete watchlist API
 
 ### Watchlist Backend
-- `[ ]` **12.1** Create `routes/watchlist.py` � `POST /api/watchlist/{id}`, `DELETE /api/watchlist/{id}`, `GET /api/users/me/watchlist`
-- `[ ]` **12.2** Add upsert guard � duplicate watchlist entry returns 200 (not 409)
+- `[x]` **12.1** Create `routes/watchlist.py` — `POST /api/watchlist/{id}`, `DELETE /api/watchlist/{id}`, `GET /api/users/me/watchlist`
+- `[x]` **12.2** Add upsert guard — duplicate watchlist entry returns 200 (not 409)
 
 ### Admin Panel
 - `[ ]` **12.3** Add `is_admin` boolean to `users` model + Alembic migration

@@ -24,6 +24,7 @@ from app.services.auction_service import (
     delete_auction,
     get_auction,
     list_auctions,
+    mark_shipped,
     update_auction,
 )
 from app.services.cloudinary_service import upload_image
@@ -102,6 +103,7 @@ async def list_auctions_route(
     max_price: Optional[Decimal] = Query(None, ge=0, description="Maximum current price"),
     ending_soon: bool = Query(False, description="Only show auctions ending within 1 hour"),
     status: Optional[str] = Query(None, description="Filter by status (open/closed/paid/cancelled)"),
+    seller_id: Optional[str] = Query(None, description="Filter by seller user ID"),
     db: AsyncSession = Depends(get_db),
 ) -> PaginatedAuctions:
     """
@@ -119,6 +121,7 @@ async def list_auctions_route(
         max_price=max_price,
         ending_soon=ending_soon,
         status_filter=status,
+        seller_id=seller_id,
     )
 
 
@@ -174,3 +177,22 @@ async def delete_auction_route(
     Only the original seller can delete.
     """
     await delete_auction(auction_id, seller_id=str(current_user.id), db=db)
+
+
+# ── PUT /api/auctions/{id}/shipped ────────────────────────────────────────────────
+@router.put(
+    "/{auction_id}/shipped",
+    response_model=AuctionOut,
+    status_code=status.HTTP_200_OK,
+    summary="Mark a paid auction as shipped (seller only)",
+)
+async def mark_shipped_route(
+    auction_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> AuctionOut:
+    """
+    Seller marks a paid auction's item as shipped.
+    Auction must have status 'paid'. Idempotent — re-marking as shipped is safe.
+    """
+    return await mark_shipped(auction_id, seller_id=str(current_user.id), db=db)

@@ -16,6 +16,8 @@ import AuctionDetail from "./pages/AuctionDetail";
 import CreateAuction from "./pages/CreateAuction";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
+import BuyerDashboard from "./pages/BuyerDashboard";
+import SellerDashboard from "./pages/SellerDashboard";
 
 function App() {
   return (
@@ -74,6 +76,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PaymentCancel />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Dashboard routes */}
+            <Route
+              path="/dashboard/buyer"
+              element={
+                <ProtectedRoute>
+                  <BuyerDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/seller"
+              element={
+                <ProtectedRoute>
+                  <SellerDashboard />
                 </ProtectedRoute>
               }
             />
