@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.config import settings
 
@@ -16,6 +18,7 @@ from app.models.notification import Notification  # noqa: F401
 
 
 from app.jobs.auction_scheduler import start_scheduler, stop_scheduler
+from app.middleware.security_headers import SecurityHeadersMiddleware
 
 # ── Lifespan (startup / shutdown) ─────────────────────────────────────────────
 @asynccontextmanager
@@ -55,6 +58,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ── Security Headers ──────────────────────────────────────────────────────────
+app.add_middleware(SecurityHeadersMiddleware)
+
+
+# ── Global Exception Handlers (14.1 — structured error responses) ─────────────
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    """
+    Convert Pydantic validation errors into a consistent, human-readable format.
+    Returns HTTP 422 with { detail: [ { field, message } ] }.
+    """
+    errors = [
+        {
+            "field": " → ".join(str(loc) for loc in err["loc"] if loc != "body"),
+            "message": err["msg"],
+        }
+        for err in exc.errors()
+    ]
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": errors},
+    )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(
+    request: Request, exc: Exception
+) -> JSONResponse:
+    """
+    Catch-all for unexpected server errors.
+    Logs the error but returns a safe generic message — no stack trace to the client.
+    """
+    import logging
+    logging.getLogger("auctionsphere").error(
+        "Unhandled exception on %s %s: %s",
+        request.method,
+        request.url.path,
+        exc,
+        exc_info=True,
+    )
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "An unexpected server error occurred. Please try again later."},
+    )
+
 
 # ─── Rate Limiter (SlowAPI) ───────────────────────────────────────────────────
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -80,6 +130,7 @@ from app.routes import bids       # noqa: E402
 from app.routes import notifications  # noqa: E402
 from app.routes import payments   # noqa: E402
 from app.routes import watchlist  # noqa: E402
+from app.routes import admin      # noqa: E402
 from app.websocket import auction_socket  # noqa: E402
 
 app.include_router(auth.router,           prefix="/api/auth",     tags=["Auth"])
@@ -88,6 +139,7 @@ app.include_router(bids.router,           prefix="/api",          tags=["Bids"])
 app.include_router(notifications.router,  prefix="/api",          tags=["Notifications"])
 app.include_router(payments.router,       prefix="/api",          tags=["Payments"])
 app.include_router(watchlist.router,      prefix="/api",          tags=["Watchlist"])
+app.include_router(admin.router,          prefix="/api/admin",    tags=["Admin"])
 app.include_router(auction_socket.router, tags=["WebSocket"])
 
 

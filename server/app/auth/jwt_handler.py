@@ -5,6 +5,14 @@ from jose import JWTError, jwt
 
 from app.config import settings
 
+# ── Security Audit (14.4) ─────────────────────────────────────────────────────
+# ALL cryptographic secrets are loaded exclusively from environment variables via
+# Pydantic BaseSettings (app/config.py). No secrets are hardcoded in this file:
+#   - settings.jwt_secret_key  → JWT_SECRET_KEY env var  (required, no default)
+#   - settings.jwt_algorithm   → JWT_ALGORITHM env var   (default: "HS256")
+#   - settings.jwt_expire_days → JWT_EXPIRE_DAYS env var (default: 7)
+# ─────────────────────────────────────────────────────────────────────────────
+
 
 def create_access_token(subject: str) -> str:
     """

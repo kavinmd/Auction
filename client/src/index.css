@@ -51,6 +51,49 @@ body {
   border-radius: 4px;
 }
 
+/* ── Keyframes ─────────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Spinner utility ───────────────────────────────────────────────────────── */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner--lg {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+/* ── Badge utility ─────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    NAVBAR
 ═══════════════════════════════════════════════════════════════════════════ */
@@ -3076,5 +3119,708 @@ body {
 @media (max-width: 480px) {
   .dashboard-watchlist-grid { grid-template-columns: 1fr; }
   .dashboard-header__title { font-size: 1.25rem; }
+}
+
+/* 375px — ultra-narrow phones (iPhone SE, Galaxy S8) */
+@media (max-width: 375px) {
+  /* Dashboard: hide secondary columns to prevent overflow */
+  .dashboard-table th:nth-child(3),
+  .dashboard-table td:nth-child(3),
+  .dashboard-table th:nth-child(5),
+  .dashboard-table td:nth-child(5) {
+    display: none;
+  }
+
+  /* Dashboard: stack action buttons vertically */
+  .dashboard-table__actions-cell {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Tabs: shrink font further */
+  .dashboard-tab {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  /* Auction list: single column already, but reduce card padding */
+  .auction-card-body { padding: 12px; }
+
+  /* Hero on mobile: scale down text */
+  .auction-hero-title { font-size: 1.75rem !important; }
+  .auction-hero-desc  { font-size: 0.85rem; }
+  .auction-hero-badge { font-size: 0.7rem; }
+
+  /* CreateAuction form on tiny screens */
+  .create-form { padding: 20px 16px; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADMIN DASHBOARD
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Navbar admin link ───────────────────────────────────────────────────── */
+.navbar-link--admin {
+  color: var(--color-accent) !important;
+  font-weight: 600;
+}
+.navbar-link--admin:hover {
+  color: #fbbf24 !important;
+}
+.navbar-mobile-link--admin {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ── Page wrapper ─────────────────────────────────────────────────────────── */
+.admin-dashboard {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #1c1032 0%, #111827 100%);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius);
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.08);
+}
+
+.admin-header__icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+}
+
+.admin-header__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 0.25rem;
+}
+
+.admin-header__subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0;
+}
+
+.admin-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.75rem 1.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+  margin-bottom: -1px;
+}
+
+.admin-tab-btn:hover {
+  color: var(--color-text);
+}
+
+.admin-tab-btn--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Tab content wrapper ─────────────────────────────────────────────────── */
+.admin-tab-content {
+  animation: fadeIn 0.2s ease;
+}
+
+/* ── Toolbar (stats + search + filter) ───────────────────────────────────── */
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.admin-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+  padding-right: 1rem;
+  border-right: 1px solid var(--color-border);
+}
+
+.admin-stat:last-of-type {
+  border-right: none;
+}
+
+.admin-stat__num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.admin-stat__label {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.admin-search {
+  flex: 1;
+  min-width: 180px;
+  padding: 0.5rem 0.875rem;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color var(--transition);
+}
+
+.admin-search:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.admin-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+.admin-select {
+  padding: 0.5rem 0.875rem;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.admin-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+  vertical-align: middle;
+  color: var(--color-text);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.admin-table__row--admin td {
+  background: rgba(168, 85, 247, 0.05);
+}
+
+.admin-table__email {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.admin-table__date {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.admin-table__price {
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.admin-table__link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  max-width: 220px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color var(--transition);
+}
+
+.admin-table__link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+/* ── User cell ───────────────────────────────────────────────────────────── */
+.admin-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.admin-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+/* ── Badges (extend existing) ────────────────────────────────────────────── */
+.badge--purple {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+.badge--blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.badge--green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge--red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.badge--gray {
+  background: rgba(107, 114, 128, 0.15);
+  color: #9ca3af;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+/* ── Btn variants ────────────────────────────────────────────────────────── */
+.btn--danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.btn--danger:hover:not(:disabled) {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+.btn--sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* ── Pagination ──────────────────────────────────────────────────────────── */
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.admin-pagination__info {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Loading ─────────────────────────────────────────────────────────────── */
+.admin-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+}
+
+.admin-loading--fullpage {
+  min-height: 60vh;
+  justify-content: center;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.admin-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.admin-empty span {
+  font-size: 2.5rem;
+}
+
+/* ── Confirm modal ───────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+.modal-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.2s ease;
+}
+
+.admin-confirm-modal {
+  max-width: 420px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.modal-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  color: var(--color-text);
+}
+
+.modal-card__body {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+.modal-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SKELETON SHIMMER UTILITIES
+═══════════════════════════════════════════════════════════════════════════ */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(55, 65, 81, 0.6) 25%,
+    rgba(75, 85, 99, 0.8) 50%,
+    rgba(55, 65, 81, 0.6) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: var(--radius-sm);
+}
+
+/* Breadcrumb skeleton */
+.skeleton-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  color: var(--color-border);
+  font-size: 0.85rem;
+}
+
+.skeleton-inline {
+  border-radius: 6px;
+  height: 14px;
+}
+.skeleton-inline--sm  { width: 48px; }
+.skeleton-inline--md  { width: 80px; }
+.skeleton-inline--lg  { width: 120px; }
+
+/* Extend the existing skeleton-line classes for detail page */
+.skeleton-shimmer.detail-main-image-wrapper { background-size: 600px 100%; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ERROR BOUNDARY FALLBACK
+═══════════════════════════════════════════════════════════════════════════ */
+.error-boundary-container {
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  overflow: hidden;
+}
+
+.error-boundary-card {
+  position: relative;
+  z-index: 2;
+  background: rgba(17, 24, 39, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius);
+  padding: 48px 40px;
+  max-width: 540px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(239, 68, 68, 0.08);
+  animation: slideUp 0.3s ease;
+}
+
+.error-boundary-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  animation: fadeIn 0.4s ease;
+}
+
+.error-boundary-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.error-boundary-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin: 0 0 28px;
+}
+
+.error-boundary-details {
+  text-align: left;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.error-boundary-details summary {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  user-select: none;
+}
+
+.error-boundary-pre {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: #f87171;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: "Fira Code", "Consolas", monospace;
+  line-height: 1.5;
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — DAY 14 PASS
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Auction List page — filter panel on small screens ── */
+@media (max-width: 520px) {
+  .filter-panel {
+    padding: 14px 16px;
+  }
+
+  .filter-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Let search bar shrink fully on tiny screens */
+  .search-input-wrapper {
+    min-width: 0;
+  }
+
+  .ending-soon-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filter-bottom-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .price-inputs-group {
+    flex-wrap: wrap;
+  }
+
+  .price-filter-input {
+    flex: 1;
+    width: auto;
+    min-width: 70px;
+  }
+
+  .btn-reset-filters {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .catalog-section {
+    padding: 16px;
+  }
+
+  /* 1-column on very small screens — override auto-fill minimum */
+  .auction-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 2-column grid between 521–767px */
+@media (min-width: 521px) and (max-width: 767px) {
+  .auction-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* ── Auction Detail — bid form full-width on mobile ── */
+@media (max-width: 520px) {
+  .auction-detail-page {
+    padding: 16px;
+  }
+
+  .detail-breadcrumbs {
+    font-size: 0.78rem;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .detail-timer-box {
+    padding: 16px;
+  }
+
+  .timer-digits-grid {
+    gap: 6px;
+  }
+
+  .timer-val {
+    font-size: 1.8rem;
+  }
+
+  .bid-input-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bid-submit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bid-input {
+    width: 100%;
+  }
+
+  .detail-price-box,
+  .detail-timer-box,
+  .detail-seller-card {
+    padding: 16px;
+  }
+
+  .detail-current-price {
+    font-size: 1.75rem !important;
+  }
+
+  .seller-buttons-row {
+    flex-direction: column;
+  }
+
+  .detail-desc-card,
+  .detail-bids-card {
+    padding: 18px;
+  }
+
+  .error-boundary-card {
+    padding: 28px 20px;
+  }
+
+  .error-boundary-title {
+    font-size: 1.4rem;
+  }
 }
 

@@ -1,41 +1,41 @@
-# AuctionSphere � 15-Day Build Plan
+# AuctionSphere ï¿½ 15-Day Build Plan
 > **Start Date:** Day 1 | **Deadline:** Day 15
 > **Stack:** FastAPI + PostgreSQL + React 18 + TypeScript + Tailwind CSS
 > **Goal:** Fully functional, deployed, interview-ready auction platform
 
 ---
 
-## ?? Day 1 � Project Setup & Scaffolding
+## ?? Day 1 ï¿½ Project Setup & Scaffolding
 > **Theme:** Get the skeleton running locally end-to-end
 
 - `[ ]` **1.1** Create monorepo root `AuctionSphere/` with `README.md` and `.gitignore`
 - `[ ]` **1.2** Write `docker-compose.yml` for local PostgreSQL 15 + pgAdmin
-- `[ ]` **1.3** Scaffold `server/` � FastAPI project with all folders: `app/models/`, `app/schemas/`, `app/routes/`, `app/services/`, `app/auth/`, `app/websocket/`, `app/jobs/`, `app/middleware/`
+- `[ ]` **1.3** Scaffold `server/` ï¿½ FastAPI project with all folders: `app/models/`, `app/schemas/`, `app/routes/`, `app/services/`, `app/auth/`, `app/websocket/`, `app/jobs/`, `app/middleware/`
 - `[ ]` **1.4** Create `requirements.txt` with all backend dependencies and install them
-- `[ ]` **1.5** Set up `app/config.py` � load all env vars via Pydantic `BaseSettings`
-- `[ ]` **1.6** Set up `app/database.py` � async SQLAlchemy engine + session using `asyncpg`
+- `[ ]` **1.5** Set up `app/config.py` ï¿½ load all env vars via Pydantic `BaseSettings`
+- `[ ]` **1.6** Set up `app/database.py` ï¿½ async SQLAlchemy engine + session using `asyncpg`
 - `[ ]` **1.7** Configure CORS middleware in `app/main.py`
-- `[ ]` **1.8** Scaffold `client/` � `npm create vite@latest` (React + TypeScript)
+- `[ ]` **1.8** Scaffold `client/` ï¿½ `npm create vite@latest` (React + TypeScript)
 - `[ ]` **1.9** Install frontend deps: Tailwind CSS, React Router v6, Axios, react-hot-toast
 - `[ ]` **1.10** Set up Alembic (`alembic init`, connect to async engine, configure `env.py`)
-- `[ ]` **1.11** Create `.env` and `.env.example` � DB URL, JWT secret, Stripe, Cloudinary keys
+- `[ ]` **1.11** Create `.env` and `.env.example` ï¿½ DB URL, JWT secret, Stripe, Cloudinary keys
 
 **? Day 1 Goal:** `uvicorn app.main:app` starts without errors; Vite dev server runs; Docker Postgres is reachable
 
 ---
 
-## ?? Day 2 � Database Models & Migrations
+## ?? Day 2 ï¿½ Database Models & Migrations
 > **Theme:** Define every table, run migrations, verify schema in DB
 
-- `[x]` **2.1** Create `models/user.py` � UUID PK, name, email (unique), password_hash, is_admin (bool), created_at
-- `[x]` **2.2** Create `models/auction.py` � UUID PK, seller_id FK, title, description, category, image_urls (ARRAY), starting_price, current_price, end_time, status (Enum: open/closed/paid/cancelled), created_at
-- `[x]` **2.3** Create `models/bid.py` � UUID PK, auction_id FK, bidder_id FK, amount (Decimal), created_at
-- `[x]` **2.4** Create `models/payment.py` � UUID PK, auction_id FK, winner_id FK, stripe_payment_id, amount, status (Enum: pending/succeeded/failed), created_at
-- `[x]` **2.5** Create `models/watchlist.py` � composite PK (user_id + auction_id), both FKs
-- `[x]` **2.6** Create `models/notification.py` � UUID PK, user_id FK, message, is_read (bool default false), created_at
+- `[x]` **2.1** Create `models/user.py` ï¿½ UUID PK, name, email (unique), password_hash, is_admin (bool), created_at
+- `[x]` **2.2** Create `models/auction.py` ï¿½ UUID PK, seller_id FK, title, description, category, image_urls (ARRAY), starting_price, current_price, end_time, status (Enum: open/closed/paid/cancelled), created_at
+- `[x]` **2.3** Create `models/bid.py` ï¿½ UUID PK, auction_id FK, bidder_id FK, amount (Decimal), created_at
+- `[x]` **2.4** Create `models/payment.py` ï¿½ UUID PK, auction_id FK, winner_id FK, stripe_payment_id, amount, status (Enum: pending/succeeded/failed), created_at
+- `[x]` **2.5** Create `models/watchlist.py` ï¿½ composite PK (user_id + auction_id), both FKs
+- `[x]` **2.6** Create `models/notification.py` ï¿½ UUID PK, user_id FK, message, is_read (bool default false), created_at
 - `[x]` **2.7** Register all models in `app/main.py` imports
 - `[x]` **2.8** Generate Alembic migration: `alembic revision --autogenerate -m "initial schema"`
-- `[x]` **2.9** Run migration: `alembic upgrade head` � verify all 6 tables in PostgreSQL
+- `[x]` **2.9** Run migration: `alembic upgrade head` ï¿½ verify all 6 tables in PostgreSQL
 
 **? Day 2 Goal:** All tables exist in DB with correct columns, types, constraints, and foreign keys
 
@@ -72,13 +72,13 @@
 
 ---
 
-## ?? Day 5 � Auction CRUD (Backend)
+## ?? Day 5 ï¿½ Auction CRUD (Backend)
 > **Theme:** Create, list, view, edit, delete auctions with Cloudinary image uploads
 
-- `[x]` **5.1** Set up Cloudinary SDK � `services/cloudinary_service.py` with `upload_image(file)` function
-- `[x]` **5.2** Create `schemas/auction.py` � `AuctionCreate`, `AuctionUpdate`, `AuctionOut`, `AuctionListOut`
-- `[x]` **5.3** Create `services/auction_service.py` � `create_auction()`, `get_auction()`, `list_auctions()` (filter by category, keyword, price range, ending-soon; paginate), `update_auction()`, `delete_auction()` (guard: no bids placed)
-- `[x]` **5.4** Create `routes/auctions.py` � `POST /api/auctions`, `GET /api/auctions`, `GET /api/auctions/{id}`, `PUT /api/auctions/{id}`, `DELETE /api/auctions/{id}`
+- `[x]` **5.1** Set up Cloudinary SDK ï¿½ `services/cloudinary_service.py` with `upload_image(file)` function
+- `[x]` **5.2** Create `schemas/auction.py` ï¿½ `AuctionCreate`, `AuctionUpdate`, `AuctionOut`, `AuctionListOut`
+- `[x]` **5.3** Create `services/auction_service.py` ï¿½ `create_auction()`, `get_auction()`, `list_auctions()` (filter by category, keyword, price range, ending-soon; paginate), `update_auction()`, `delete_auction()` (guard: no bids placed)
+- `[x]` **5.4** Create `routes/auctions.py` ï¿½ `POST /api/auctions`, `GET /api/auctions`, `GET /api/auctions/{id}`, `PUT /api/auctions/{id}`, `DELETE /api/auctions/{id}`
 - `[x]` **5.5** Mount auctions router in `main.py`
 - `[x]` **5.6** Test: create auction with image ? Cloudinary URL stored in DB; filters return correct results
 
@@ -89,12 +89,12 @@
 ## ?? Day 6  Auction CRUD (Frontend)
 > **Theme:** Browse and create auctions in a polished UI
 
-- `[x]` **6.1** Create `src/api/auctions.ts` – Axios wrappers for all auction endpoints
-- `[x]` **6.2** Create `src/types/index.ts` – TypeScript interfaces: `Auction`, `Bid`, `User`, `Notification`, `Payment`
-- `[x]` **6.3** Build `src/components/AuctionCard.tsx` – reusable card (image, title, current price, time remaining badge, category)
-- `[x]` **6.4** Build `src/pages/AuctionList.tsx` – responsive grid of `AuctionCard`, filter bar (category, price range, keyword, ending-soon toggle), pagination
-- `[x]` **6.5** Build `src/pages/AuctionDetail.tsx` – images, title, description, current price (large), live countdown timer (`setInterval`), seller info, bid history table, bid form (visible only when open + not seller)
-- `[x]` **6.6** Build `src/pages/CreateAuction.tsx` – form with title, description, category, starting price, end datetime, multi-image upload with preview; submit → redirect to new auction
+- `[x]` **6.1** Create `src/api/auctions.ts` â€“ Axios wrappers for all auction endpoints
+- `[x]` **6.2** Create `src/types/index.ts` â€“ TypeScript interfaces: `Auction`, `Bid`, `User`, `Notification`, `Payment`
+- `[x]` **6.3** Build `src/components/AuctionCard.tsx` â€“ reusable card (image, title, current price, time remaining badge, category)
+- `[x]` **6.4** Build `src/pages/AuctionList.tsx` â€“ responsive grid of `AuctionCard`, filter bar (category, price range, keyword, ending-soon toggle), pagination
+- `[x]` **6.5** Build `src/pages/AuctionDetail.tsx` â€“ images, title, description, current price (large), live countdown timer (`setInterval`), seller info, bid history table, bid form (visible only when open + not seller)
+- `[x]` **6.6** Build `src/pages/CreateAuction.tsx` â€“ form with title, description, category, starting price, end datetime, multi-image upload with preview; submit â†’ redirect to new auction
 
 **? Day 6 Goal:** Can browse with filters, view auction detail with live countdown, create a new listing with images
 
@@ -103,17 +103,17 @@
 ## ?? Day 7  Bidding Logic (Backend) ? CRITICAL
 > **Theme:** Concurrency-safe bid placement with PostgreSQL row-level locking
 
-- `[x]` **7.1** Create `schemas/bid.py` – `BidCreate` (amount: Decimal), `BidOut`
-- `[x]` **7.2** Create `services/bid_service.py` – `place_bid(db, auction_id, bidder_id, amount)`:
+- `[x]` **7.1** Create `schemas/bid.py` â€“ `BidCreate` (amount: Decimal), `BidOut`
+- `[x]` **7.2** Create `services/bid_service.py` â€“ `place_bid(db, auction_id, bidder_id, amount)`:
   - Open transaction with row-level lock: `SELECT * FROM auctions WHERE id=? FOR UPDATE`
   - Validate inside lock: status == 'open', now < end_time, bidder != seller, amount > current_price
   - Insert new bid row; update `auction.current_price = amount`
-  - Anti-sniping: if `end_time - now < 60s` → `end_time += 2 minutes`
+  - Anti-sniping: if `end_time - now < 60s` â†’ `end_time += 2 minutes`
   - Commit and return result
-- `[x]` **7.3** Create `routes/bids.py` – `POST /api/auctions/{id}/bids` (auth), `GET /api/auctions/{id}/bids` (public), `GET /api/users/me/bids` (auth)
+- `[x]` **7.3** Create `routes/bids.py` â€“ `POST /api/auctions/{id}/bids` (auth), `GET /api/auctions/{id}/bids` (public), `GET /api/users/me/bids` (auth)
 - `[x]` **7.4** Add rate limiting to bid endpoint using `slowapi` (max 10 bids/min per user)
-- `[x]` **7.5** Write `tests/test_bids.py` concurrency test – `asyncio.gather()` fires 2 simultaneous bids; assert exactly 1 succeeds + 1 fails + DB has 1 bid row
-- `[x]` **7.6** Run test – confirm it passes ✅
+- `[x]` **7.5** Write `tests/test_bids.py` concurrency test â€“ `asyncio.gather()` fires 2 simultaneous bids; assert exactly 1 succeeds + 1 fails + DB has 1 bid row
+- `[x]` **7.6** Run test â€“ confirm it passes âœ…
 
 **? Day 7 Goal:** Bidding is concurrency-safe. Two simultaneous bids ? exactly one wins. Anti-sniping works.
 
@@ -122,13 +122,13 @@
 ## ?? Day 8  WebSocket Real-time Updates
 > **Theme:** Instant live updates  no polling, no refresh needed
 
-- `[x]` **8.1** Create `websocket/connection_manager.py` – `dict[auction_id → list[WebSocket]]`; `connect()`, `disconnect()`, `broadcast(auction_id, message)` methods
-- `[x]` **8.2** Create `websocket/auction_socket.py` – endpoint `/ws/auctions/{id}`; accept, register, keep alive loop, deregister on disconnect
-- `[x]` **8.3** Wire `bid_service.place_bid()` → after commit: `manager.broadcast(auction_id, { type: "new_bid", bidder_name, amount, current_price, end_time })`
-- `[x]` **8.4** Wire scheduler → on auction close: `manager.broadcast(auction_id, { type: "auction_closed", winner_id, final_price })`
-- `[x]` **8.5** Create `src/hooks/useAuctionSocket.ts` – opens WS on mount, parses JSON messages, calls `onNewBid` / `onAuctionClosed` / `onTimeExtended` callbacks, auto-reconnects with backoff
-- `[x]` **8.6** Wire `AuctionDetail.tsx` to `useAuctionSocket` – `onNewBid` updates price + bid list; `onTimeExtended` updates countdown; `onAuctionClosed` shows banner + disables bid form
-- `[x]` **8.7** Test: two browser tabs on same auction – bid in tab 1 → tab 2 updates instantly
+- `[x]` **8.1** Create `websocket/connection_manager.py` â€“ `dict[auction_id â†’ list[WebSocket]]`; `connect()`, `disconnect()`, `broadcast(auction_id, message)` methods
+- `[x]` **8.2** Create `websocket/auction_socket.py` â€“ endpoint `/ws/auctions/{id}`; accept, register, keep alive loop, deregister on disconnect
+- `[x]` **8.3** Wire `bid_service.place_bid()` â†’ after commit: `manager.broadcast(auction_id, { type: "new_bid", bidder_name, amount, current_price, end_time })`
+- `[x]` **8.4** Wire scheduler â†’ on auction close: `manager.broadcast(auction_id, { type: "auction_closed", winner_id, final_price })`
+- `[x]` **8.5** Create `src/hooks/useAuctionSocket.ts` â€“ opens WS on mount, parses JSON messages, calls `onNewBid` / `onAuctionClosed` / `onTimeExtended` callbacks, auto-reconnects with backoff
+- `[x]` **8.6** Wire `AuctionDetail.tsx` to `useAuctionSocket` â€“ `onNewBid` updates price + bid list; `onTimeExtended` updates countdown; `onAuctionClosed` shows banner + disables bid form
+- `[x]` **8.7** Test: two browser tabs on same auction â€“ bid in tab 1 â†’ tab 2 updates instantly
 
 **? Day 8 Goal:** Real-time updates work across multiple users with no page refresh
 
@@ -156,16 +156,16 @@
 > **Theme:** Notification bell UI + Stripe checkout flow
 
 ### Notifications Frontend
-- `[x]` **10.1** Create `src/api/notifications.ts` – fetch + mark-as-read functions
-- `[x]` **10.2** Add notification bell to `Navbar.tsx` – unread count badge, dropdown list on click, mark as read on click, poll every 30s
+- `[x]` **10.1** Create `src/api/notifications.ts` â€“ fetch + mark-as-read functions
+- `[x]` **10.2** Add notification bell to `Navbar.tsx` â€“ unread count badge, dropdown list on click, mark as read on click, poll every 30s
 
 ### Payments Backend
 - `[x]` **10.3** Set up Stripe test keys in `.env` (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`)
-- `[x]` **10.4** Create `services/payment_service.py` – `create_checkout_session()`: verify user is winner + auction is closed + not paid → create Stripe Checkout → insert `payments` row with `status=pending`
+- `[x]` **10.4** Create `services/payment_service.py` â€“ `create_checkout_session()`: verify user is winner + auction is closed + not paid â†’ create Stripe Checkout â†’ insert `payments` row with `status=pending`
 - `[x]` **10.5** Create `routes/payments.py`:
-  - `POST /api/payments/checkout/{auction_id}` (auth, winner only) → returns `{ checkout_url }`
-  - `POST /api/payments/webhook` – verify Stripe signature; `checkout.session.completed` → `status=succeeded`, `auction.status=paid`; `payment_intent.payment_failed` → `status=failed`
-- `[x]` **10.6** Add failed-payment rule to `docs/design-decisions.md` – "No auto-reopen. Winner has 48h to retry. After that, seller must relist."
+  - `POST /api/payments/checkout/{auction_id}` (auth, winner only) â†’ returns `{ checkout_url }`
+  - `POST /api/payments/webhook` â€“ verify Stripe signature; `checkout.session.completed` â†’ `status=succeeded`, `auction.status=paid`; `payment_intent.payment_failed` â†’ `status=failed`
+- `[x]` **10.6** Add failed-payment rule to `docs/design-decisions.md` â€“ "No auto-reopen. Winner has 48h to retry. After that, seller must relist."
 - `[x]` **10.7** Test webhook locally via Stripe CLI: `stripe listen --forward-to localhost:8000/api/payments/webhook`
 
 **? Day 10 Goal:** Notification bell shows live notifications; Stripe checkout created; webhook updates DB correctly
@@ -176,117 +176,117 @@
 > **Theme:** Complete payment flow + buyer and seller dashboards
 
 ### Payments Frontend
-- `[x]` **11.1** Add "Pay Now" button in `BuyerDashboard` — calls checkout API — redirects to Stripe page
-- `[x]` **11.2** Create `src/pages/PaymentSuccess.tsx` — success page with order summary
-- `[x]` **11.3** Create `src/pages/PaymentCancel.tsx` — failed/cancelled page with retry link
+- `[x]` **11.1** Add "Pay Now" button in `BuyerDashboard` â€” calls checkout API â€” redirects to Stripe page
+- `[x]` **11.2** Create `src/pages/PaymentSuccess.tsx` â€” success page with order summary
+- `[x]` **11.3** Create `src/pages/PaymentCancel.tsx` â€” failed/cancelled page with retry link
 
 ### Buyer Dashboard
 - `[x]` **11.4** Build `src/pages/BuyerDashboard.tsx` with 3 tabs:
-  - **My Bids** — all bids with auction title, amount, status, "winning" badge
-  - **My Watchlist** — saved auctions with current price + time remaining
-  - **Won Auctions** — won auctions with payment status (Pending/Paid) + Pay Now button
+  - **My Bids** â€” all bids with auction title, amount, status, "winning" badge
+  - **My Watchlist** â€” saved auctions with current price + time remaining
+  - **Won Auctions** â€” won auctions with payment status (Pending/Paid) + Pay Now button
 
 ### Seller Dashboard
 - `[x]` **11.5** Build `src/pages/SellerDashboard.tsx` with 2 tabs:
-  - **My Listings** — live bid count + current price; Edit/Delete if no bids; status badge
-  - **Sold Items** — closed/paid auctions; "Mark as Shipped" button
-- `[x]` **11.6** Backend: `PUT /api/auctions/{id}/shipped` — seller marks item as shipped
+  - **My Listings** â€” live bid count + current price; Edit/Delete if no bids; status badge
+  - **Sold Items** â€” closed/paid auctions; "Mark as Shipped" button
+- `[x]` **11.6** Backend: `PUT /api/auctions/{id}/shipped` â€” seller marks item as shipped
 
 ### Watchlist
-- `[x]` **11.7** Create `src/api/watchlist.ts` — add/remove/fetch watchlist
+- `[x]` **11.7** Create `src/api/watchlist.ts` â€” add/remove/fetch watchlist
 - `[x]` **11.8** Add watchlist remove button to `AuctionCard.tsx`; full watchlist tab in BuyerDashboard
 
 **? Day 11 Goal:** Stripe payment completes and updates `auction.status=paid`; both dashboards are fully functional
 
 ---
 
-## ?? Day 12 � Admin Panel & Watchlist Backend
+## ?? Day 12 ï¿½ Admin Panel & Watchlist Backend
 > **Theme:** Admin oversight tools + complete watchlist API
 
 ### Watchlist Backend
-- `[x]` **12.1** Create `routes/watchlist.py` — `POST /api/watchlist/{id}`, `DELETE /api/watchlist/{id}`, `GET /api/users/me/watchlist`
-- `[x]` **12.2** Add upsert guard — duplicate watchlist entry returns 200 (not 409)
+- `[x]` **12.1** Create `routes/watchlist.py` â€” `POST /api/watchlist/{id}`, `DELETE /api/watchlist/{id}`, `GET /api/users/me/watchlist`
+- `[x]` **12.2** Add upsert guard â€” duplicate watchlist entry returns 200 (not 409)
 
 ### Admin Panel
-- `[ ]` **12.3** Add `is_admin` boolean to `users` model + Alembic migration
-- `[ ]` **12.4** Create `auth/admin_dependency.py` � `require_admin` FastAPI dependency
-- `[ ]` **12.5** Admin routes (all require `require_admin`):
-  - `GET /api/admin/users` � all users list
-  - `GET /api/admin/auctions` � all auctions (any status)
-  - `DELETE /api/admin/auctions/{id}` � remove any listing
-- `[ ]` **12.6** Build `src/pages/AdminDashboard.tsx` � users table + auctions table with remove button; route-guarded to `is_admin` users only
+- `[x]` **12.3** Add `is_admin` boolean to `users` model + Alembic migration
+- `[x]` **12.4** Create `auth/admin_dependency.py`  `require_admin` FastAPI dependency
+- `[x]` **12.5** Admin routes (all require `require_admin`):
+  - `GET /api/admin/users`  all users list
+  - `GET /api/admin/auctions`  all auctions (any status)
+  - `DELETE /api/admin/auctions/{id}`  remove any listing
+- `[x]` **12.6** Build `src/pages/AdminDashboard.tsx`  users table + auctions table with remove button; route-guarded to `is_admin` users only
 
 **? Day 12 Goal:** Admin can view/remove any listing; watchlist add/remove/list all work correctly
 
 ---
 
-## ?? Day 13 � Testing Suite
+## ?? Day 13  Testing Suite
 > **Theme:** Automated tests for critical paths
 
-- `[ ]` **13.1** Configure `pytest` + `pytest-asyncio` � `conftest.py` with async test DB session and `AsyncClient` (httpx); rollback after each test
-- `[ ]` **13.2** Auth tests (`tests/test_auth.py`):
+- `[x]` **13.1** Configure `pytest` + `pytest-asyncio` â€” `conftest.py` with async test DB session and `AsyncClient` (httpx); rollback after each test
+- `[x]` **13.2** Auth tests (`tests/test_auth.py`):
   - Register new user ? 201
   - Duplicate email ? 400
   - Login correct password ? returns JWT
   - Login wrong password ? 401
   - `GET /me` with valid token ? returns user
   - `GET /me` with no token ? 401
-- `[ ]` **13.3** Bid concurrency test (`tests/test_bids.py`):
+- `[x]` **13.3** Bid concurrency test (`tests/test_bids.py`):
   - `asyncio.gather()` fires 2 simultaneous bids on same auction
   - Assert exactly 1 is 200; exactly 1 is 400/409
   - Assert DB has exactly 1 new bid row
-- `[ ]` **13.4** Scheduler test (`tests/test_scheduler.py`):
+- `[x]` **13.4** Scheduler test (`tests/test_scheduler.py`):
   - Create auction with `end_time = now - 1min`
   - Call scheduler job directly
   - Assert `auction.status == 'closed'`; winner notification exists in DB
-- `[ ]` **13.5** Webhook test (`tests/test_payments.py`):
+- `[x]` **13.5** Webhook test (`tests/test_payments.py`):
   - Mock `stripe.Webhook.construct_event()` to return fake event
   - POST `checkout.session.completed` payload
   - Assert `payment.status == 'succeeded'`; `auction.status == 'paid'`
-- `[ ]` **13.6** Run `pytest -v` � all tests must pass ?
+- `[x]` **13.6** Run `pytest -v` â€” all tests must pass âœ…
 
-**? Day 13 Goal:** Full test suite passes green � concurrency, auth, scheduler, and webhook all verified
+**? Day 13 Goal:** Full test suite passes green ï¿½ concurrency, auth, scheduler, and webhook all verified
 
 ---
 
-## ?? Day 14 � Polish, Security & Mobile Responsiveness
+## ?? Day 14 ï¿½ Polish, Security & Mobile Responsiveness
 > **Theme:** Production-ready hardening; great UX on all screen sizes
 
 ### Security & Validation
-- `[ ]` **14.1** Audit all endpoints � Pydantic validation on every route; structured `{ detail: ... }` error responses
-- `[ ]` **14.2** Confirm Stripe webhook signature always verified before acting on payload
-- `[ ]` **14.3** Lock CORS to production frontend domain (not `*`)
-- `[ ]` **14.4** Grep codebase for hardcoded secrets � confirm all via env vars
-- `[ ]` **14.5** Add security headers middleware (`X-Content-Type-Options`, `X-Frame-Options`)
+- `[x]` **14.1** Audit all endpoints — Pydantic validation on every route; structured `{ detail: ... }` error responses
+- `[x]` **14.2** Confirm Stripe webhook signature always verified before acting on payload
+- `[x]` **14.3** Lock CORS to production frontend domain (not `*`)
+- `[x]` **14.4** Grep codebase for hardcoded secrets — confirm all via env vars
+- `[x]` **14.5** Add security headers middleware (`X-Content-Type-Options`, `X-Frame-Options`)
 
 ### Frontend Polish
-- `[ ]` **14.6** Mobile audit at 375px, 768px, 1280px � navbar hamburger, 1-column grid, accessible bid form
-- `[ ]` **14.7** Add skeleton loaders to auction list and detail pages
-- `[ ]` **14.8** Add empty state messages � "No auctions found", "No bids yet", "Watchlist is empty"
-- `[ ]` **14.9** Add React error boundary � catch unexpected errors, show user-friendly fallback
-- `[ ]` **14.10** Verify all toast notifications fire correctly (bid placed, outbid, errors)
-- `[ ]` **14.11** Add favicon + `<meta>` description/title tags to `index.html`
+- `[x]` **14.6** Mobile audit at 375px, 768px, 1280px — navbar hamburger, 1-column grid, accessible bid form
+- `[x]` **14.7** Add skeleton loaders to auction list and detail pages
+- `[x]` **14.8** Add empty state messages — "No auctions found", "No bids yet", "Watchlist is empty"
+- `[x]` **14.9** Add React error boundary — catch unexpected errors, show user-friendly fallback
+- `[x]` **14.10** Verify all toast notifications fire correctly (bid placed, outbid, errors)
+- `[x]` **14.11** Add favicon + `<meta>` description/title tags to `index.html`
 
 **? Day 14 Goal:** App is secure, validated, mobile-responsive, and polished with good UX details
 
 ---
 
-## ?? Day 15 � Deployment & Final Documentation ??
+## ?? Day 15 ï¿½ Deployment & Final Documentation ??
 > **Theme:** Ship it. Public URL, live data, complete README.
 
 ### Database
 - `[ ]` **15.1** Create production PostgreSQL on Neon or Supabase (free tier)
-- `[ ]` **15.2** Run `alembic upgrade head` against prod DB � verify all tables created
+- `[ ]` **15.2** Run `alembic upgrade head` against prod DB ï¿½ verify all tables created
 
 ### Backend (Render / Railway)
 - `[ ]` **15.3** Create `Procfile`: `web: uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- `[ ]` **15.4** Deploy backend � set all env vars: `DATABASE_URL`, `JWT_SECRET_KEY`, `STRIPE_*`, `CLOUDINARY_*`
+- `[ ]` **15.4** Deploy backend ï¿½ set all env vars: `DATABASE_URL`, `JWT_SECRET_KEY`, `STRIPE_*`, `CLOUDINARY_*`
 - `[ ]` **15.5** Verify health: `GET https://your-backend.com/api/auth/me` returns 401 (not 500)
 - `[ ]` **15.6** Register production webhook endpoint in Stripe dashboard
 
 ### Frontend (Vercel)
 - `[ ]` **15.7** Set `VITE_API_URL=https://your-backend.com` in Vercel env vars
-- `[ ]` **15.8** Deploy `client/` to Vercel � connect GitHub, auto-deploy on push
+- `[ ]` **15.8** Deploy `client/` to Vercel ï¿½ connect GitHub, auto-deploy on push
 - `[ ]` **15.9** Verify frontend loads and hits backend with no CORS errors
 
 ### End-to-End Smoke Test
@@ -301,7 +301,7 @@
   - Project description + live URL
   - Architecture overview
   - Database schema summary
-  - **Concurrency design decision** � explain `SELECT ... FOR UPDATE` and why it matters
+  - **Concurrency design decision** ï¿½ explain `SELECT ... FOR UPDATE` and why it matters
   - Local setup instructions
   - Environment variables reference table
 
@@ -332,7 +332,8 @@
 ---
 
 > **?? Pro Tip:** Start each day by reviewing the previous day's ? Goal. If not fully met, finish it first.
-> **Day 7 (Bidding Concurrency)** is the most technically critical � never rush it.
+> **Day 7 (Bidding Concurrency)** is the most technically critical ï¿½ never rush it.
+
 
 
 

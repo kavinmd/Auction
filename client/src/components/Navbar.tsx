@@ -174,6 +174,19 @@ export default function Navbar() {
                 Selling
               </Link>
 
+              {/* ── Admin Panel link (admin users only) ── */}
+              {user?.is_admin && (
+                <Link
+                  to="/dashboard/admin"
+                  id="navbar-admin-link"
+                  className={`navbar-link navbar-link--admin ${
+                    location.pathname.startsWith("/dashboard/admin") ? "navbar-link--active" : ""
+                  }`}
+                >
+                  🛡️ Admin
+                </Link>
+              )}
+
               {/* ── Notification Bell ── */}
               <div className="navbar-bell-wrap" ref={bellRef}>
                 <button
@@ -315,6 +328,16 @@ export default function Navbar() {
             >
               Selling
             </Link>
+            {/* Admin Panel (mobile) */}
+            {user?.is_admin && (
+              <Link
+                to="/dashboard/admin"
+                className="navbar-mobile-link navbar-mobile-link--admin"
+                onClick={() => setMenuOpen(false)}
+              >
+                🛡️ Admin Panel
+              </Link>
+            )}
             {/* Mobile notification summary */}
             {unreadCount > 0 && (
               <div className="navbar-mobile-link navbar-mobile-notif">

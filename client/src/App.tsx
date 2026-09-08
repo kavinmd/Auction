@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Components
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Pages
 import Login from "./pages/Login";
@@ -18,6 +19,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import BuyerDashboard from "./pages/BuyerDashboard";
 import SellerDashboard from "./pages/SellerDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
         <Navbar />
 
         <main className="main-content">
+          <ErrorBoundary>
           <Routes>
             {/* Catalog and public routes */}
             <Route path="/" element={<AuctionList />} />
@@ -98,6 +101,16 @@ function App() {
               }
             />
 
+            {/* Admin dashboard */}
+            <Route
+              path="/dashboard/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
             {/* 404 fallback */}
             <Route
               path="*"
@@ -111,6 +124,7 @@ function App() {
               }
             />
           </Routes>
+          </ErrorBoundary>
         </main>
       </BrowserRouter>
     </AuthProvider>

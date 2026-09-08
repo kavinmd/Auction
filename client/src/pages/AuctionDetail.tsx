@@ -243,12 +243,70 @@ export default function AuctionDetail() {
 
   if (loading) {
     return (
-      <div className="auction-detail-loading">
-        <div className="auth-loading-spinner" />
-        <p>Loading auction details...</p>
+      <div className="auction-detail-page">
+        {/* Breadcrumb skeleton */}
+        <div className="skeleton-breadcrumb">
+          <div className="skeleton-inline skeleton-inline--sm" />
+          <span>/</span>
+          <div className="skeleton-inline skeleton-inline--md" />
+          <span>/</span>
+          <div className="skeleton-inline skeleton-inline--lg" />
+        </div>
+
+        <div className="detail-layout">
+          {/* Gallery skeleton */}
+          <div className="detail-gallery">
+            <div className="detail-main-image-wrapper skeleton-shimmer" />
+            <div className="detail-thumbnails-strip">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="detail-thumb-btn skeleton-shimmer" style={{ width: 72, height: 60 }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Info pane skeleton */}
+          <div className="detail-info-pane">
+            <div className="detail-header" style={{ gap: 12 }}>
+              <div className="skeleton-shimmer" style={{ width: 80, height: 22, borderRadius: 100 }} />
+              <div className="skeleton-shimmer" style={{ width: "90%", height: 36, borderRadius: 8 }} />
+              <div className="skeleton-shimmer" style={{ width: "60%", height: 36, borderRadius: 8, marginTop: 4 }} />
+              <div className="skeleton-shimmer" style={{ width: 160, height: 18, borderRadius: 6, marginTop: 4 }} />
+            </div>
+
+            {/* Timer box skeleton */}
+            <div className="detail-timer-box" style={{ minHeight: 96 }}>
+              <div className="skeleton-shimmer" style={{ width: "100%", height: 80, borderRadius: 8 }} />
+            </div>
+
+            {/* Price + bid form skeleton */}
+            <div className="detail-price-box">
+              <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
+                <div>
+                  <div className="skeleton-shimmer" style={{ width: 120, height: 14, borderRadius: 6, marginBottom: 8 }} />
+                  <div className="skeleton-shimmer" style={{ width: 180, height: 40, borderRadius: 8 }} />
+                </div>
+                <div style={{ marginLeft: "auto", textAlign: "right" }}>
+                  <div className="skeleton-shimmer" style={{ width: 60, height: 32, borderRadius: 8, marginBottom: 4 }} />
+                  <div className="skeleton-shimmer" style={{ width: 70, height: 14, borderRadius: 6 }} />
+                </div>
+              </div>
+              <div className="skeleton-shimmer" style={{ width: "100%", height: 52, borderRadius: 8 }} />
+            </div>
+
+            {/* Seller card skeleton */}
+            <div className="detail-seller-card" style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <div className="skeleton-shimmer" style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <div className="skeleton-shimmer" style={{ width: 100, height: 14, borderRadius: 6, marginBottom: 6 }} />
+                <div className="skeleton-shimmer" style={{ width: 140, height: 16, borderRadius: 6 }} />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
+
 
   if (error || !auction) {
     return (
