@@ -36,6 +36,7 @@ def _is_cloudinary_configured() -> bool:
     )
 
 
+
 # Configure Cloudinary SDK if credentials look valid
 if _is_cloudinary_configured():
     cloudinary.config(
@@ -44,6 +45,17 @@ if _is_cloudinary_configured():
         api_secret=settings.cloudinary_api_secret,
         secure=True,
     )
+else:
+    # In production, warn loudly — local disk is ephemeral on Render/Railway
+    if getattr(settings, "environment", "development").lower() == "production":
+        import sys
+        print(
+            "\n[WARNING] ⚠️  Cloudinary is NOT configured in production!\n"
+            "  Images will be saved to local disk — these are LOST on every redeploy.\n"
+            "  Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.\n",
+            file=sys.stderr,
+            flush=True,
+        )
 
 _FOLDER = "auctionsphere"
 _MAX_BYTES = 10 * 1024 * 1024  # 10 MB hard limit per image

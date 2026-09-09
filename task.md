@@ -1,7 +1,9 @@
-# AuctionSphere ï¿½ 15-Day Build Plan
-> **Start Date:** Day 1 | **Deadline:** Day 15
-> **Stack:** FastAPI + PostgreSQL + React 18 + TypeScript + Tailwind CSS
-> **Goal:** Fully functional, deployed, interview-ready auction platform
+# AuctionSphere — 15-Day Build Plan
+
+> ✅ **BUILD STATUS: COMPLETE & DEPLOYED**
+> This is the original day-by-day planning document used to build AuctionSphere.
+> All items below were completed. For current live status, see the [README](../README.md).
+> **Live URL:** https://auction-two-black.vercel.app
 
 ---
 

@@ -1,0 +1,71 @@
+name: CI — Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run pytest suite
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: auctionsphere
+          POSTGRES_PASSWORD: auctionsphere_pass
+          POSTGRES_DB: auctionsphere_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://auctionsphere:auctionsphere_pass@localhost:5432/auctionsphere_test
+      JWT_SECRET_KEY: ci-test-secret-key-not-used-in-production
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_DAYS: 7
+      STRIPE_SECRET_KEY: sk_test_placeholder
+      STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      STRIPE_SUCCESS_URL: http://localhost:5173/payment/success
+      STRIPE_CANCEL_URL: http://localhost:5173/payment/cancel
+      CLOUDINARY_CLOUD_NAME: placeholder
+      CLOUDINARY_API_KEY: placeholder
+      CLOUDINARY_API_SECRET: placeholder
+      FRONTEND_URL: http://localhost:5173
+      ENVIRONMENT: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('server/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        working-directory: server
+        run: pip install -r requirements.txt
+
+      - name: Run Alembic migrations
+        working-directory: server
+        run: alembic upgrade head
+
+      - name: Run tests
+        working-directory: server
+        run: pytest -v --tb=short

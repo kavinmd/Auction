@@ -62,9 +62,17 @@ export function useAuctionSocket(
     if (!auctionId || !enabled) return;
 
     // Resolve WS protocol & host
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/ws/auctions/${auctionId}`;
+    // In production (Vercel), VITE_WS_URL must point to the Render backend
+    // e.g. VITE_WS_URL=wss://your-backend.onrender.com
+    // In dev, Vite proxies /ws → ws://localhost:8000, so we use current host
+    let wsUrl: string;
+    if (import.meta.env.VITE_WS_URL) {
+      wsUrl = `${import.meta.env.VITE_WS_URL}/ws/auctions/${auctionId}`;
+    } else {
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const host = window.location.host;
+      wsUrl = `${protocol}//${host}/ws/auctions/${auctionId}`;
+    }
 
     try {
       const socket = new WebSocket(wsUrl);
